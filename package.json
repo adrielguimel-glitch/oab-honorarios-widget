@@ -1,0 +1,12 @@
+{
+  "name": "oab-honorarios-widget",
+  "version": "1.0.0",
+  "description": "Widget embeddável de honorários OAB com IA — zero configuração",
+  "main": "widget.js",
+  "scripts": {
+    "proxy": "node proxy/server.js",
+    "dev": "npx http-server . -p 8080 --cors -o /demo/index.html"
+  },
+  "keywords": ["oab", "honorarios", "widget", "ai", "claude"],
+  "license": "MIT"
+}
