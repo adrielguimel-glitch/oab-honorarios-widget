@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo — OAB Honorários Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root{
+      --navy:#003366;--blue:#0057A8;--gold:#C8952A;
+      --light:#F4F7FB;--border:#D8E3EF;--text:#1A2A3A;--muted:#6B7E92;
+      --white:#fff;--ok:#1B6E4F;--ok-bg:#EAF5EF;
+    }
+
+    body{
+      font-family:'DM Sans',system-ui,sans-serif;
+      background:#EEF3FA;color:var(--text);
+      padding:2rem 1rem 6rem;
+      line-height:1.6;
+    }
+
+    .page-wrapper{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem}
+
+    /* ── Cabeçalho OAB ── */
+    .oab-topbar{
+      background:var(--navy);padding:14px 24px;border-radius:14px;
+      display:flex;align-items:center;gap:14px;
+    }
+    .oab-topbar-shield{
+      width:42px;height:42px;background:var(--gold);
+      border-radius:8px 8px 16px 16px;display:flex;align-items:center;
+      justify-content:center;font-size:16px;font-weight:700;color:#fff;
+      font-family:'Instrument Serif',serif;flex-shrink:0;
+    }
+    .oab-topbar h1{
+      font-family:'Instrument Serif',serif;font-size:22px;
+      font-weight:400;color:#fff;letter-spacing:-.2px;
+    }
+    .oab-topbar p{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+
+    /* ── Aviso widget ── */
+    .widget-notice{
+      background:rgba(200,149,42,.1);border:1px solid rgba(200,149,42,.35);
+      border-radius:10px;padding:10px 16px;font-size:13px;color:#7A5A10;
+      display:flex;align-items:center;gap:8px;
+    }
+
+    /* ── Card de tabela ── */
+    .table-card{
+      background:var(--white);border-radius:14px;
+      border:1px solid var(--border);overflow:hidden;
+    }
+    .table-card-header{
+      background:var(--light);padding:12px 20px;
+      border-bottom:1px solid var(--border);
+      font-size:14px;font-weight:500;color:var(--navy);
+      display:flex;align-items:center;gap:8px;
+    }
+    .table-card-header .section-dot{
+      width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;
+    }
+
+    table{width:100%;border-collapse:collapse;font-size:13.5px}
+    thead th{
+      background:var(--navy);color:#fff;padding:9px 16px;
+      text-align:left;font-weight:500;font-size:12px;
+      letter-spacing:.3px;text-transform:uppercase;
+    }
+    thead th:last-child{text-align:right}
+    tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover{background:var(--light)}
+    tbody td{padding:9px 16px;color:var(--text)}
+    tbody td:first-child{color:var(--muted);width:55%}
+    tbody td:last-child{
+      font-weight:500;color:var(--ok);text-align:right;white-space:nowrap
+    }
+
+    /* ── Nota legal ── */
+    .legal-note{
+      background:var(--white);border:1px solid var(--border);
+      border-radius:10px;padding:14px 18px;font-size:12px;color:var(--muted);
+    }
+    .legal-note strong{color:var(--text);font-weight:500}
+  </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <div class="oab-topbar">
+    <div class="oab-topbar-shield">OAB</div>
+    <div>
+      <h1>Tabela de Honorários</h1>
+      <p>OAB/RS — Valores de referência para serviços advocatícios</p>
+    </div>
+  </div>
+
+  <div class="widget-notice">
+    💬 Dica: use o assistente no canto inferior direito para encontrar rapidamente o honorário do serviço que você prestou.
+  </div>
+
+  <!-- DIREITO DO TRABALHO -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="section-dot"></div>
+      Direito do Trabalho
+    </div>
+    <table>
+      <thead>
+        <tr><th>Serviço</th><th>Honorário sugerido</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Reclamação trabalhista simples</td><td>20% a 30% do valor da causa</td></tr>
+        <tr><td>Recurso ordinário</td><td>10% a 20% do valor da causa</td></tr>
+        <tr><td>Dissídio coletivo</td><td>5% a 10% do valor do dissídio</td></tr>
+        <tr><td>Agravo de instrumento (TST)</td><td>10% a 15% do valor da causa</td></tr>
+        <tr><td>Consulta trabalhista (por hora)</td><td>R$ 300,00 a R$ 600,00</td></tr>
+        <tr><td>Homologação de rescisão</td><td>10% a 20% do valor rescisório</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DIREITO CIVIL -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="section-dot"></div>
+      Direito Civil
+    </div>
+    <table>
+      <thead>
+        <tr><th>Serviço</th><th>Honorário sugerido</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ação de indenização por danos</td><td>15% a 25% do valor obtido</td></tr>
+        <tr><td>Divórcio consensual</td><td>5 a 15 UFIRs por parte</td></tr>
+        <tr><td>Divórcio litigioso</td><td>10 a 20 UFIRs por parte</td></tr>
+        <tr><td>Inventário e partilha</td><td>4% a 6% do monte-mor</td></tr>
+        <tr><td>Usucapião</td><td>10% a 20% do valor do imóvel</td></tr>
+        <tr><td>Ação de alimentos</td><td>15% a 25% dos alimentos devidos</td></tr>
+        <tr><td>Guarda e visitação</td><td>10 a 20 UFIRs</td></tr>
+        <tr><td>Execução de sentença</td><td>10% a 20% do valor executado</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DIREITO PREVIDENCIÁRIO -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="section-dot"></div>
+      Direito Previdenciário
+    </div>
+    <table>
+      <thead>
+        <tr><th>Serviço</th><th>Honorário sugerido</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Aposentadoria por invalidez</td><td>20% a 30% dos atrasados</td></tr>
+        <tr><td>Aposentadoria por idade ou tempo</td><td>20% a 30% dos atrasados</td></tr>
+        <tr><td>Concessão ou revisão de benefício</td><td>20% a 30% dos atrasados</td></tr>
+        <tr><td>BPC/LOAS</td><td>20% a 30% dos atrasados</td></tr>
+        <tr><td>Auxílio por incapacidade</td><td>20% a 30% dos atrasados</td></tr>
+        <tr><td>Pensão por morte</td><td>20% a 30% dos atrasados</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DIREITO CRIMINAL -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="section-dot"></div>
+      Direito Criminal
+    </div>
+    <table>
+      <thead>
+        <tr><th>Serviço</th><th>Honorário sugerido</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Defesa em processo criminal — fase inquérito</td><td>10 a 30 UFIRs</td></tr>
+        <tr><td>Defesa em processo criminal — fase processual</td><td>20 a 60 UFIRs</td></tr>
+        <tr><td>Defesa em processo criminal — recursos</td><td>15 a 40 UFIRs por recurso</td></tr>
+        <tr><td>Habeas corpus</td><td>15 a 30 UFIRs</td></tr>
+        <tr><td>Júri popular (por sessão)</td><td>30 a 100 UFIRs</td></tr>
+        <tr><td>Revisão criminal</td><td>20 a 50 UFIRs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CONSULTORIA E CONTRATOS -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="section-dot"></div>
+      Consultoria e Contratos
+    </div>
+    <table>
+      <thead>
+        <tr><th>Serviço</th><th>Honorário sugerido</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Elaboração de contrato simples</td><td>R$ 500,00 a R$ 1.500,00</td></tr>
+        <tr><td>Elaboração de contrato complexo</td><td>R$ 1.500,00 a R$ 5.000,00</td></tr>
+        <tr><td>Parecer jurídico escrito</td><td>R$ 800,00 a R$ 5.000,00</td></tr>
+        <tr><td>Consultoria mensal (retainer)</td><td>R$ 1.500,00 a R$ 8.000,00</td></tr>
+        <tr><td>Diligência (por ato)</td><td>R$ 150,00 a R$ 400,00</td></tr>
+        <tr><td>Consulta verbal (por hora)</td><td>R$ 300,00 a R$ 600,00</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DIREITO EMPRESARIAL -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="section-dot"></div>
+      Direito Empresarial
+    </div>
+    <table>
+      <thead>
+        <tr><th>Serviço</th><th>Honorário sugerido</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Constituição de empresa (simples)</td><td>R$ 800,00 a R$ 2.000,00</td></tr>
+        <tr><td>Constituição de empresa (complexa)</td><td>R$ 2.000,00 a R$ 8.000,00</td></tr>
+        <tr><td>Dissolução / liquidação societária</td><td>3% a 6% do patrimônio</td></tr>
+        <tr><td>Recuperação judicial</td><td>3% a 6% do passivo</td></tr>
+        <tr><td>Falência</td><td>3% a 6% do ativo arrecadado</td></tr>
+        <tr><td>Registro de marca (INPI)</td><td>R$ 600,00 a R$ 1.500,00</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DIREITO IMOBILIÁRIO -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="section-dot"></div>
+      Direito Imobiliário
+    </div>
+    <table>
+      <thead>
+        <tr><th>Serviço</th><th>Honorário sugerido</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Compra e venda de imóvel</td><td>1% a 2% do valor do imóvel</td></tr>
+        <tr><td>Ação de despejo</td><td>15% a 25% do valor da causa</td></tr>
+        <tr><td>Revisão de contrato de locação</td><td>R$ 500,00 a R$ 2.000,00</td></tr>
+        <tr><td>Regularização de imóvel</td><td>2% a 4% do valor do imóvel</td></tr>
+        <tr><td>Ação de reintegração de posse</td><td>10% a 20% do valor do imóvel</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legal-note">
+    <strong>Nota:</strong> Os valores acima são sugestões mínimas de honorários conforme a Tabela de Honorários da OAB/RS, baseada no Código de Ética e Disciplina da OAB. UFIRs são calculadas com base na tabela vigente. As partes são livres para ajustar os valores por meio de contrato escrito.
+  </div>
+
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     WIDGET — só esta linha é necessária em produção!
+     Substitua YOUR_API_KEY pela sua chave sk-ant-...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<script
+  src="../widget.js"
+  data-api-key="YOUR_API_KEY"
+  data-title="Assistente de Honorários"
+  data-subtitle="Tabela OAB/RS · IA"
+></script>
+
+</body>
+</html>
