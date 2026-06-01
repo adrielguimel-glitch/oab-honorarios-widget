@@ -83,8 +83,8 @@
   // ─────────────────────────────────────────────────────────────────────────
   // API CLAUDE
   // ─────────────────────────────────────────────────────────────────────────
-  async function askClaude(userMessage, pageContent) {
-    const endpoint = CONFIG.proxyUrl || 'https://api.anthropic.com/v1/messages';
+  async function askAI(userMessage, pageContent) {
+    const endpoint = CONFIG.proxyUrl || 'https://api.openai.com/v1/chat/completions';
 
     const systemPrompt = `Você é um assistente jurídico especializado em honorários advocatícios.
 
@@ -120,20 +120,16 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
     const headers = {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${CONFIG.apiKey}`,
     };
 
-    // Se for chamada direta à Anthropic, precisa dos headers corretos
-    if (!CONFIG.proxyUrl) {
-      headers['x-api-key'] = CONFIG.apiKey;
-      headers['anthropic-version'] = '2023-06-01';
-      headers['anthropic-dangerous-direct-browser-access'] = 'true';
-    }
-
     const body = JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'gpt-4o-mini',
       max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage },
+      ],
     });
 
     const response = await fetch(endpoint, { method: 'POST', headers, body });
@@ -144,7 +140,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     }
 
     const data = await response.json();
-    const raw = data?.content?.[0]?.text || '';
+    const raw = data?.choices?.[0]?.message?.content || '';
 
     // Extrai bloco de resultado estruturado
     const match = raw.match(/<oab_result>([\s\S]*?)<\/oab_result>/);
@@ -271,7 +267,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
     try {
       const pageContent = extractPageContent();
-      const { displayText, result } = await askClaude(text, pageContent);
+      const { displayText, result } = await askAI(text, pageContent);
 
       typingEl.remove();
       appendMsg(msgs, displayText, 'bot', result);
