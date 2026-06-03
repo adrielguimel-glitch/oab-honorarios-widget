@@ -62,8 +62,8 @@
       clone.querySelectorAll(sel).forEach(el => el.remove());
     });
 
-    // Texto limpo: colapsa espaços/quebras de linha excessivas
-    let text = (clone.innerText || clone.textContent || '').trim();
+    // textContent lê todo o conteúdo incluindo acordeões/elementos ocultos
+    let text = (clone.textContent || '').trim();
     text = text.replace(/\n{3,}/g, '\n\n').replace(/[ \t]{2,}/g, ' ');
 
     // Limita a ~12.000 chars para não explodir o contexto
@@ -433,7 +433,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · Feito por JUSFY · v13</div>
+        <div class="oab-footer">Assistente IA · <a class="oab-footer-link" href="https://jusfy.com.br/" target="_blank" rel="noopener">Feito por JUSFY</a> · v13</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -655,6 +655,11 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   color:var(--c-muted) !important;background:#fff !important;
   border-top:1px solid #f3f4f6 !important;flex-shrink:0 !important
 }
+#__oab_root .oab-footer-link{
+  color:var(--j-primary) !important;text-decoration:underline !important;
+  font-weight:600 !important;cursor:pointer !important
+}
+#__oab_root .oab-footer-link:hover{color:var(--j-dark) !important}
 
 /* ── toggle ── */
 #__oab_root .oab-toggle{
