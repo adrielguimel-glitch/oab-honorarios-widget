@@ -372,7 +372,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB · v9</div>
+        <div class="oab-footer">Assistente IA · OAB · v10</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -410,6 +410,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     style.textContent = `
 /* ── reset ── */
 #__oab_root *{box-sizing:border-box;margin:0;padding:0}
+.oab-panel,.oab-panel *{box-sizing:border-box}
 
 /* ── tokens Jusfy ── */
 #__oab_root{
@@ -435,21 +436,23 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── painel ── */
 .oab-panel{
   position:absolute;bottom:72px;right:0;
-  width:420px;background:var(--c-white);
+  width:420px;max-width:calc(100vw - 32px);
+  background:var(--c-white);
   border-radius:var(--radius-panel);
   box-shadow:var(--shadow-panel);
   overflow:hidden;isolation:isolate;
   display:flex;flex-direction:column;
   opacity:0;transform:translateY(14px) scale(.97);
   pointer-events:none;transition:opacity .22s ease,transform .22s ease;
+  --oab-spacing-x:24px;
 }
 .oab-panel.oab-open{opacity:1;transform:none;pointer-events:all}
 
 /* ── header ── */
 .oab-header{
   background:linear-gradient(135deg,var(--j-darker) 0%,var(--j-primary) 100%);
-  padding:24px 36px;
-  display:flex;align-items:center;gap:16px;flex-shrink:0
+  padding:22px var(--oab-spacing-x);
+  display:flex;align-items:center;gap:14px;flex-shrink:0
 }
 .oab-header-shield{
   width:44px;height:44px;background:var(--j-gold);
@@ -479,7 +482,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── mensagens ── */
 .oab-messages{
-  overflow-y:auto;padding:24px 28px 12px;
+  overflow-y:auto;padding:24px var(--oab-spacing-x) 12px;
   display:flex;flex-direction:column;gap:12px;
   background:var(--c-white);
   min-height:180px;max-height:300px;flex:1
@@ -551,36 +554,33 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── sugestões ── */
 .oab-suggestions-wrap{
-  position:relative;background:var(--c-white);
-  flex-shrink:0;padding-top:4px
-}
-.oab-suggestions-wrap::after{
-  content:'';position:absolute;right:0;top:0;bottom:0;
-  width:52px;pointer-events:none;
-  background:linear-gradient(to right,transparent,var(--c-white))
+  position:relative;background:var(--c-white);flex-shrink:0
 }
 .oab-suggestions{
   display:flex;gap:8px;
-  padding:8px 0 12px 28px;
+  padding:8px var(--oab-spacing-x) 14px;
   overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;
-  scrollbar-width:none
+  scroll-behavior:smooth;scrollbar-width:none;
+  -ms-overflow-style:none
 }
 .oab-suggestions::-webkit-scrollbar{display:none}
-.oab-chip{
-  padding:7px 14px;background:var(--c-white);
-  border:1.5px solid var(--c-border);border-radius:20px;
-  font-size:12.5px;color:var(--j-dark);font-weight:500;
-  cursor:pointer;white-space:nowrap;flex-shrink:0;
-  transition:all .15s ease;
-  font-family:'DM Sans',system-ui,sans-serif;
-  box-shadow:0 1px 4px rgba(0,0,0,.05)
+.oab-suggestions::after{
+  content:'';flex:0 0 1px;
+  padding-right:calc(var(--oab-spacing-x) - 8px)
 }
-.oab-chip:last-child{margin-right:20px}
-.oab-chip:hover{background:var(--j-primary);border-color:var(--j-primary);color:#fff;box-shadow:0 4px 12px rgba(73,176,134,.3)}
+.oab-chip{
+  padding:8px 16px;background:var(--c-white);
+  border:1.5px solid var(--j-primary);border-radius:100px;
+  font-size:13px;color:var(--j-primary);font-weight:500;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:all .2s ease;
+  font-family:'DM Sans',system-ui,sans-serif
+}
+.oab-chip:hover{background:var(--j-light);}
 
 /* ── input ── */
 .oab-input-row{
-  border-top:1px solid var(--c-border);padding:12px 28px 14px;
+  border-top:1px solid var(--c-border);padding:12px var(--oab-spacing-x) 14px;
   display:flex;gap:10px;align-items:flex-end;
   background:var(--c-white);flex-shrink:0
 }
