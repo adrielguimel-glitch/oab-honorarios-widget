@@ -490,7 +490,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const card = document.createElement('div');
     card.className = 'oab-lead-card';
     card.innerHTML = `
-      <div class="oab-lead-title">Para continuar usando o assistente, preencha seus dados:</div>
+      <div class="oab-lead-title">Para continuar usando o assistente da <a href="https://jusfy.com.br/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;font-weight:700">JUSFY</a>, preencha seus dados e aproveite mais!</div>
       <input class="oab-lead-input" type="text"  placeholder="Seu nome completo"  data-f="nome">
       <input class="oab-lead-input" type="email" placeholder="E-mail"              data-f="email">
       <input class="oab-lead-input" type="tel"   placeholder="Telefone / WhatsApp" data-f="tel">
