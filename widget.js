@@ -239,7 +239,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const root    = document.getElementById('__oab_root');
     const input   = root.querySelector('.oab-input');
     const sendBtn = root.querySelector('.oab-send');
-    const sugg    = root.querySelector('.oab-suggestions');
+    const sugg    = root.querySelector('.oab-suggestions-wrap');
     const msgs    = root.querySelector('.oab-messages');
 
     const text = input.value.trim();
@@ -360,8 +360,10 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
           </div>
         </div>
 
-        <div class="oab-suggestions">
-          ${SUGGESTIONS.map(s => `<div class="oab-chip">${s}</div>`).join('')}
+        <div class="oab-suggestions-wrap">
+          <div class="oab-suggestions">
+            ${SUGGESTIONS.map(s => `<div class="oab-chip">${s}</div>`).join('')}
+          </div>
         </div>
 
         <div class="oab-input-row">
@@ -370,7 +372,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB · v7</div>
+        <div class="oab-footer">Assistente IA · OAB · v8</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -486,7 +488,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 .oab-messages::-webkit-scrollbar-thumb{background:#c5d9d3;border-radius:4px}
 .oab-messages::-webkit-scrollbar-track{background:transparent}
 
-.oab-msg{display:flex;flex-direction:column;gap:4px;max-width:86%;animation:oab-in .2s ease}
+.oab-msg{display:flex;flex-direction:column;gap:4px;max-width:78%;animation:oab-in .2s ease}
 @keyframes oab-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .oab-msg-bot{align-self:flex-start}
 .oab-msg-user{align-self:flex-end}
@@ -549,11 +551,18 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 @keyframes oab-bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
 
 /* ── sugestões ── */
+.oab-suggestions-wrap{
+  position:relative;background:var(--c-surface);
+  border-top:1px solid var(--c-border);flex-shrink:0
+}
+.oab-suggestions-wrap::after{
+  content:'';position:absolute;right:0;top:0;bottom:0;
+  width:48px;pointer-events:none;
+  background:linear-gradient(to right,transparent,var(--c-surface))
+}
 .oab-suggestions{
   display:flex;gap:8px;
   padding:12px 0 14px 28px;
-  background:var(--c-surface);
-  border-top:1px solid var(--c-border);
   overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;
   scrollbar-width:none
 }
