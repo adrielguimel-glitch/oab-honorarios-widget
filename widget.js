@@ -370,7 +370,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB · v5</div>
+        <div class="oab-footer">Assistente IA · OAB · v6</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -424,8 +424,8 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   --c-ok:#166534;
   --c-ok-bg:#F0FDF4;
   --c-ok-border:#BBF7D0;
-  --radius-panel:16px;
-  --radius-msg:16px;
+  --radius-panel:12px;
+  --radius-msg:14px;
   --shadow-panel:0 20px 60px rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.10);
   --shadow-el:0 1px 6px rgba(0,0,0,.07);
 }
@@ -433,7 +433,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── painel ── */
 .oab-panel{
   position:absolute;bottom:72px;right:0;
-  width:380px;background:var(--c-white);
+  width:400px;background:var(--c-white);
   border-radius:var(--radius-panel);
   box-shadow:var(--shadow-panel);
   overflow:hidden;isolation:isolate;
@@ -446,7 +446,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── header ── */
 .oab-header{
   background:linear-gradient(135deg,var(--j-darker) 0%,var(--j-primary) 100%);
-  padding:22px 28px;
+  padding:22px 32px;
   display:flex;align-items:center;gap:16px;flex-shrink:0
 }
 .oab-header-shield{
@@ -477,7 +477,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── mensagens ── */
 .oab-messages{
-  overflow-y:auto;padding:20px 20px 16px;
+  overflow-y:auto;padding:22px 24px 16px;
   display:flex;flex-direction:column;gap:14px;
   background:var(--c-surface);
   min-height:200px;max-height:320px;flex:1
@@ -551,7 +551,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── sugestões ── */
 .oab-suggestions{
   display:flex;gap:8px;
-  padding:12px 0 14px 20px;
+  padding:12px 0 14px 24px;
   background:var(--c-surface);
   border-top:1px solid var(--c-border);
   overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;
@@ -572,7 +572,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── input ── */
 .oab-input-row{
-  border-top:1px solid var(--c-border);padding:14px 20px;
+  border-top:1px solid var(--c-border);padding:14px 24px;
   display:flex;gap:10px;align-items:flex-end;
   background:var(--c-white);flex-shrink:0
 }
