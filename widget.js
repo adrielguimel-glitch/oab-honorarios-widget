@@ -648,8 +648,11 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── painel ── */
 #__oab_root .oab-panel{
-  position:absolute !important;bottom:72px !important;right:0 !important;
+  position:fixed !important;
+  bottom:90px !important;
+  right:24px !important;
   width:420px !important;max-width:calc(100vw - 32px) !important;
+  max-height:calc(100vh - 110px) !important;
   background:#fff !important;border-radius:16px !important;
   box-shadow:0 8px 32px rgba(0,0,0,.14),0 20px 60px rgba(0,0,0,.10) !important;
   overflow:hidden !important;isolation:isolate !important;
@@ -702,7 +705,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 #__oab_root .oab-messages{
   overflow-y:auto !important;padding:24px 24px 12px !important;
   display:flex !important;flex-direction:column !important;gap:12px !important;
-  background:#fff !important;min-height:160px !important;max-height:var(--oab-msgs-height,380px) !important;flex:1 !important
+  background:#fff !important;min-height:160px !important;flex:1 1 0 !important;overflow-y:scroll !important
 }
 #__oab_root .oab-messages::-webkit-scrollbar{width:3px}
 #__oab_root .oab-messages::-webkit-scrollbar-thumb{background:#c5d9d3;border-radius:4px}
