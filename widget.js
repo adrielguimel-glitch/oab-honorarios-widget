@@ -423,9 +423,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   --c-ok:#166534;
   --c-ok-bg:#F0FDF4;
   --c-ok-border:#BBF7D0;
-  --radius-panel:20px;
-  --radius-msg:16px;
-  --shadow-panel:0 24px 60px rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.10),0 1px 4px rgba(0,0,0,.06);
+  --radius-panel:14px;
+  --radius-msg:14px;
+  --shadow-panel:0 24px 60px rgba(0,0,0,.20),0 6px 20px rgba(0,0,0,.12),0 1px 4px rgba(0,0,0,.06);
   --shadow-el:0 2px 8px rgba(0,0,0,.08);
 }
 
@@ -444,16 +444,17 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── header ── */
 .oab-header{
-  background:var(--c-navy);padding:20px 24px;
+  background:linear-gradient(135deg,#003d80 0%,var(--c-navy) 100%);
+  padding:20px 28px;
   display:flex;align-items:center;gap:14px;flex-shrink:0
 }
 .oab-header-shield{
-  width:44px;height:44px;background:var(--c-gold);
+  width:46px;height:46px;background:var(--c-gold);
   border-radius:10px 10px 18px 18px;display:flex;
   align-items:center;justify-content:center;
   font-size:14px;font-weight:700;color:#fff;flex-shrink:0;
   font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.5px;
-  box-shadow:0 4px 12px rgba(0,0,0,.28)
+  box-shadow:0 4px 14px rgba(0,0,0,.30)
 }
 .oab-header-info{display:flex;flex-direction:column;gap:3px;min-width:0}
 .oab-header-info strong{
@@ -549,7 +550,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── sugestões ── */
 .oab-suggestions{
   display:flex;gap:8px;
-  padding:12px 20px 16px;
+  padding:12px 0 16px 20px;
   background:var(--c-surface);
   border-top:1px solid var(--c-border);
   overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;
@@ -565,6 +566,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   font-family:'DM Sans',system-ui,sans-serif;
   box-shadow:0 1px 4px rgba(0,0,0,.06)
 }
+.oab-chip:last-child{margin-right:20px}
 .oab-chip:hover{background:var(--c-navy);border-color:var(--c-navy);color:#fff;box-shadow:0 4px 12px rgba(0,51,102,.2)}
 
 /* ── input ── */
