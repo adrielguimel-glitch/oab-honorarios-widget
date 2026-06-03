@@ -22,6 +22,7 @@
     title:     scriptTag.getAttribute('data-title') || 'Assistente de Honorários',
     subtitle:  scriptTag.getAttribute('data-subtitle') || 'Tabela OAB • IA',
     proxyUrl:  scriptTag.getAttribute('data-proxy-url') || '',
+    contentUrl: scriptTag.getAttribute('data-content-url') || '', // API JSON para SPAs
     selector:  scriptTag.getAttribute('data-selector') || 'body',
     lang:      scriptTag.getAttribute('data-lang') || 'pt-BR',
     mock:      scriptTag.getAttribute('data-mock') === 'true',
@@ -44,6 +45,48 @@
   // EXTRAÇÃO DE CONTEÚDO DA PÁGINA
   // Lê o texto visível do seletor configurado, filtrando ruído (nav, footer…)
   // ─────────────────────────────────────────────────────────────────────────
+  // Converte qualquer JSON de honorários em texto legível para a IA
+  function jsonToReadableText(obj, depth) {
+    depth = depth || 0;
+    if (obj === null || obj === undefined) return '';
+    if (typeof obj === 'string') return obj.trim();
+    if (typeof obj === 'number') return String(obj);
+    if (Array.isArray(obj)) {
+      return obj.map(function(i){ return jsonToReadableText(i, depth); }).filter(Boolean).join('\n');
+    }
+    if (typeof obj === 'object') {
+      var lines = [];
+      var TITLE_KEYS  = ['titulo','title','nome','name','descricao','description','indicativo'];
+      var VALUE_KEYS  = ['valor','value','preco','price','percentual','percent','porcentagem','minimo','maximo'];
+      var titleKey = TITLE_KEYS.find(function(k){ return obj[k] && typeof obj[k]==='string'; });
+      var arrKey   = Object.keys(obj).find(function(k){ return Array.isArray(obj[k]) && obj[k].length; });
+
+      if (titleKey) lines.push((depth === 0 ? '## ' : '') + obj[titleKey]);
+
+      var vals = VALUE_KEYS.filter(function(k){ return obj[k]; }).map(function(k){ return String(obj[k]).trim(); });
+      if (vals.length) lines.push(vals.join(' | '));
+
+      if (arrKey) lines.push(jsonToReadableText(obj[arrKey], depth + 1));
+      else if (!titleKey) {
+        var flat = Object.values(obj)
+          .filter(function(v){ return typeof v==='string'||typeof v==='number'; })
+          .map(function(v){ return String(v).trim(); }).filter(Boolean);
+        if (flat.length) lines.push(flat.join(' | '));
+      }
+      return lines.filter(Boolean).join('\n');
+    }
+    return '';
+  }
+
+  async function fetchContentFromApi() {
+    const res  = await fetch(CONFIG.contentUrl);
+    const json = await res.json();
+    let text = jsonToReadableText(json, 0);
+    text = text.replace(/\n{3,}/g,'\n\n').trim();
+    if (text.length > 30000) text = text.slice(0, 30000) + '\n\n[... truncado ...]';
+    return text;
+  }
+
   function extractPageContent() {
     const root = document.querySelector(CONFIG.selector) || document.body;
 
@@ -368,9 +411,21 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const typingEl = appendTyping(msgs);
 
     try {
-      const { displayText, result } = CONFIG.mock
-        ? mockAI(text)
-        : await askAI(text, extractPageContent());
+      let pageContent;
+      if (CONFIG.mock) {
+        const { displayText, result } = mockAI(text);
+        typingEl.remove();
+        appendMsg(msgs, displayText, 'bot', result);
+        if (result?.found && result.scrollKeyword) setTimeout(() => smartScroll(result.scrollKeyword), 700);
+        isLoading = false; sendBtn.disabled = false;
+        return;
+      }
+      if (CONFIG.contentUrl) {
+        pageContent = await fetchContentFromApi();
+      } else {
+        pageContent = extractPageContent();
+      }
+      const { displayText, result } = await askAI(text, pageContent);
 
       typingEl.remove();
       appendMsg(msgs, displayText, 'bot', result);
