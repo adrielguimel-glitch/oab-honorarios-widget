@@ -372,7 +372,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB · v10</div>
+        <div class="oab-footer">Assistente IA · OAB · v11</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -408,9 +408,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const style = document.createElement('style');
     style.id = '__oab_styles';
     style.textContent = `
-/* ── reset ── */
-#__oab_root *{box-sizing:border-box;margin:0;padding:0}
-.oab-panel,.oab-panel *{box-sizing:border-box}
+/* ── reset blindado ── */
+#__oab_root *{box-sizing:border-box !important;margin:0 !important;padding:0 !important}
+.oab-panel,.oab-panel *{box-sizing:border-box !important}
 
 /* ── tokens Jusfy ── */
 #__oab_root{
@@ -450,9 +450,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── header ── */
 .oab-header{
-  background:linear-gradient(135deg,var(--j-darker) 0%,var(--j-primary) 100%);
-  padding:22px var(--oab-spacing-x);
-  display:flex;align-items:center;gap:14px;flex-shrink:0
+  background:linear-gradient(135deg,var(--j-darker) 0%,var(--j-primary) 100%) !important;
+  padding:22px 24px !important;
+  display:flex !important;align-items:center !important;gap:14px !important;flex-shrink:0 !important
 }
 .oab-header-shield{
   width:44px;height:44px;background:var(--j-gold);
@@ -482,9 +482,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── mensagens ── */
 .oab-messages{
-  overflow-y:auto;padding:24px var(--oab-spacing-x) 12px;
-  display:flex;flex-direction:column;gap:12px;
-  background:var(--c-white);
+  overflow-y:auto !important;padding:24px 24px 12px !important;
+  display:flex !important;flex-direction:column !important;gap:12px !important;
+  background:#fff !important;
   min-height:180px;max-height:300px;flex:1
 }
 .oab-messages::-webkit-scrollbar{width:3px}
@@ -497,16 +497,16 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 .oab-msg-user{align-self:flex-end}
 
 .oab-bubble{
-  padding:11px 15px;line-height:1.55;
-  font-size:13.5px;color:var(--c-text)
+  padding:14px 18px !important;line-height:1.6 !important;
+  font-size:14px !important;color:#1f2937 !important
 }
 .oab-msg-bot .oab-bubble{
-  background:var(--c-surface);border:none;
-  border-radius:4px var(--radius-msg) var(--radius-msg) var(--radius-msg)
+  background:#f3f4f6 !important;border:none !important;
+  border-radius:16px 16px 16px 4px !important
 }
 .oab-msg-user .oab-bubble{
-  background:var(--j-primary);color:#fff;
-  border-radius:var(--radius-msg) var(--radius-msg) 4px var(--radius-msg)
+  background:var(--j-primary) !important;color:#fff !important;
+  border-radius:16px 16px 4px 16px !important
 }
 .oab-time{font-size:10px;color:var(--c-muted);padding:0 4px;display:block}
 .oab-msg-user .oab-time{text-align:right}
@@ -557,9 +557,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   position:relative;background:var(--c-white);flex-shrink:0
 }
 .oab-suggestions{
-  display:flex;gap:8px;
-  padding:8px var(--oab-spacing-x) 14px;
-  overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;
+  display:flex !important;gap:8px !important;
+  padding:8px 24px 16px 24px !important;
+  overflow-x:auto !important;overflow-y:hidden !important;flex-wrap:nowrap !important;
   scroll-behavior:smooth;scrollbar-width:none;
   -ms-overflow-style:none
 }
@@ -569,32 +569,32 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   padding-right:calc(var(--oab-spacing-x) - 8px)
 }
 .oab-chip{
-  padding:8px 16px;background:var(--c-white);
-  border:1.5px solid var(--j-primary);border-radius:100px;
-  font-size:13px;color:var(--j-primary);font-weight:500;
-  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  padding:10px 16px !important;background:#fff !important;
+  border:1px solid #49b086 !important;border-radius:100px !important;
+  font-size:13px !important;color:#49b086 !important;font-weight:500 !important;
+  cursor:pointer !important;white-space:nowrap !important;flex-shrink:0 !important;
   transition:all .2s ease;
-  font-family:'DM Sans',system-ui,sans-serif
+  font-family:'DM Sans',system-ui,sans-serif !important
 }
-.oab-chip:hover{background:var(--j-light);}
+.oab-chip:hover{background:#eef8f4 !important}
 
 /* ── input ── */
 .oab-input-row{
-  border-top:1px solid var(--c-border);padding:12px var(--oab-spacing-x) 14px;
-  display:flex;gap:10px;align-items:flex-end;
-  background:var(--c-white);flex-shrink:0
+  border-top:1px solid #f3f4f6 !important;padding:16px 24px !important;
+  display:flex !important;gap:12px !important;align-items:center !important;
+  background:#fff !important;flex-shrink:0 !important
 }
 .oab-input{
-  flex:1;border:1.5px solid var(--c-border);border-radius:24px;
-  padding:10px 18px;font-size:13.5px;
-  font-family:'DM Sans',system-ui,sans-serif;
-  color:var(--c-text);background:var(--c-surface);
-  resize:none;outline:none;line-height:1.45;
+  flex:1 !important;border:1px solid #e5e7eb !important;border-radius:24px !important;
+  padding:14px 20px !important;font-size:14px !important;
+  font-family:'DM Sans',system-ui,sans-serif !important;
+  color:#1f2937 !important;background:#f9fafb !important;
+  resize:none !important;outline:none !important;line-height:1.45 !important;
   max-height:88px;overflow-y:auto;
   transition:border-color .15s,background .15s
 }
-.oab-input:focus{border-color:var(--j-primary);background:#fff}
-.oab-input::placeholder{color:var(--c-muted)}
+.oab-input:focus{border-color:#49b086 !important;background:#fff !important}
+.oab-input::placeholder{color:#9ca3af !important}
 .oab-send{
   width:40px;height:40px;border-radius:50%;
   background:var(--j-primary);border:none;cursor:pointer;
