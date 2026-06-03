@@ -252,14 +252,16 @@ Regras:
     if (CONFIG.proxyUrl) {
       // Modo proxy → Anthropic/Claude (chave fica no servidor)
       endpoint = CONFIG.proxyUrl;
+      // Monta histórico: últimas 6 trocas (3 pares user/assistant)
+      const history = chatHistory.slice(-6);
       headers = { 'Content-Type': 'application/json' };
       body = JSON.stringify({
         system: systemPrompt,
-        messages: [{ role: 'user', content: userMessage }],
+        messages: [...history, { role: 'user', content: userMessage }],
       });
       getRawText = (data) => data?.content?.[0]?.text || '';
     } else {
-      // Modo direto → OpenAI (chave no data-api-key)
+      const history = chatHistory.slice(-6);
       endpoint = 'https://api.openai.com/v1/chat/completions';
       headers = {
         'Content-Type': 'application/json',
@@ -270,6 +272,7 @@ Regras:
         max_tokens: 1000,
         messages: [
           { role: 'system', content: systemPrompt },
+          ...history,
           { role: 'user', content: userMessage },
         ],
       });
@@ -293,6 +296,13 @@ Regras:
     }
 
     const displayText = raw.replace(/<oab_result>[\s\S]*?<\/oab_result>/g, '').trim();
+
+    // Salva no histórico (texto limpo sem o bloco oab_result)
+    chatHistory.push(
+      { role: 'user',      content: userMessage },
+      { role: 'assistant', content: displayText + (result ? ' [honorários encontrados na tabela]' : '') }
+    );
+
     return { displayText, result };
   }
 
@@ -377,6 +387,7 @@ Regras:
   // ESTADO DO CHAT
   // ─────────────────────────────────────────────────────────────────────────
   let isOpen = false;
+  let chatHistory = []; // histórico de mensagens para contexto
   let leadCaptured = !!localStorage.getItem('oab_lead_captured');
   let freeUsed     = false; // 1ª interação já foi usada?
   let pendingQuery = '';    // guarda a query enquanto form está aberto
@@ -469,6 +480,8 @@ Regras:
         </div>`;
       suggWrap.style.display = '';
       firstMessage = true;
+      chatHistory = [];
+      freeUsed = false;
       input.value = '';
       input.style.height = 'auto';
     });
