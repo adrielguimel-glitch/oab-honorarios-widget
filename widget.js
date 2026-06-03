@@ -370,7 +370,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB · v4</div>
+        <div class="oab-footer">Assistente IA · OAB · v5</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -409,24 +409,25 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── reset ── */
 #__oab_root *{box-sizing:border-box;margin:0;padding:0}
 
-/* ── tokens ── */
+/* ── tokens Jusfy ── */
 #__oab_root{
-  --c-navy:#003366;
-  --c-blue:#0057A8;
-  --c-gold:#C8952A;
-  --c-surface:#F5F7FA;
-  --c-border:#E2E8F0;
-  --c-text:#1A2A3A;
-  --c-muted:#7A8FA6;
+  --j-primary:#49b086;
+  --j-dark:#3a8a6a;
+  --j-darker:#2d6e54;
+  --j-light:#eef8f4;
+  --j-gold:#C8952A;
+  --c-surface:#F7F9F8;
+  --c-border:#E0EDE8;
+  --c-text:#1A2A25;
+  --c-muted:#7A9490;
   --c-white:#FFFFFF;
-  --c-green:#22C55E;
   --c-ok:#166534;
   --c-ok-bg:#F0FDF4;
   --c-ok-border:#BBF7D0;
-  --radius-panel:14px;
-  --radius-msg:14px;
-  --shadow-panel:0 24px 60px rgba(0,0,0,.20),0 6px 20px rgba(0,0,0,.12),0 1px 4px rgba(0,0,0,.06);
-  --shadow-el:0 2px 8px rgba(0,0,0,.08);
+  --radius-panel:16px;
+  --radius-msg:16px;
+  --shadow-panel:0 20px 60px rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.10);
+  --shadow-el:0 1px 6px rgba(0,0,0,.07);
 }
 
 /* ── painel ── */
@@ -444,31 +445,31 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── header ── */
 .oab-header{
-  background:linear-gradient(135deg,#003d80 0%,var(--c-navy) 100%);
-  padding:20px 28px;
-  display:flex;align-items:center;gap:14px;flex-shrink:0
+  background:linear-gradient(135deg,var(--j-darker) 0%,var(--j-primary) 100%);
+  padding:22px 28px;
+  display:flex;align-items:center;gap:16px;flex-shrink:0
 }
 .oab-header-shield{
-  width:46px;height:46px;background:var(--c-gold);
+  width:46px;height:46px;background:var(--j-gold);
   border-radius:10px 10px 18px 18px;display:flex;
   align-items:center;justify-content:center;
   font-size:14px;font-weight:700;color:#fff;flex-shrink:0;
   font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.5px;
-  box-shadow:0 4px 14px rgba(0,0,0,.30)
+  box-shadow:0 3px 12px rgba(0,0,0,.25)
 }
 .oab-header-info{display:flex;flex-direction:column;gap:3px;min-width:0}
 .oab-header-info strong{
-  font-size:14.5px;font-weight:600;color:#fff;
+  font-size:15px;font-weight:600;color:#fff;
   letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
-.oab-header-info span{font-size:12px;color:rgba(255,255,255,.5)}
+.oab-header-info span{font-size:12px;color:rgba(255,255,255,.6)}
 .oab-status{
   margin-left:auto;flex-shrink:0;
   display:flex;align-items:center;gap:6px;
-  font-size:11.5px;color:rgba(255,255,255,.5)
+  font-size:11.5px;color:rgba(255,255,255,.65)
 }
 .oab-dot{
-  width:8px;height:8px;background:var(--c-green);
+  width:8px;height:8px;background:#86efac;
   border-radius:50%;flex-shrink:0;
   animation:oab-pulse 2s ease-in-out infinite
 }
@@ -476,13 +477,13 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── mensagens ── */
 .oab-messages{
-  overflow-y:auto;padding:20px;
+  overflow-y:auto;padding:20px 20px 16px;
   display:flex;flex-direction:column;gap:14px;
   background:var(--c-surface);
   min-height:200px;max-height:320px;flex:1
 }
-.oab-messages::-webkit-scrollbar{width:4px}
-.oab-messages::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:4px}
+.oab-messages::-webkit-scrollbar{width:3px}
+.oab-messages::-webkit-scrollbar-thumb{background:#c5d9d3;border-radius:4px}
 .oab-messages::-webkit-scrollbar-track{background:transparent}
 
 .oab-msg{display:flex;flex-direction:column;gap:4px;max-width:86%;animation:oab-in .2s ease}
@@ -491,7 +492,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 .oab-msg-user{align-self:flex-end}
 
 .oab-bubble{
-  padding:10px 14px;line-height:1.55;
+  padding:11px 15px;line-height:1.55;
   font-size:13.5px;color:var(--c-text)
 }
 .oab-msg-bot .oab-bubble{
@@ -500,7 +501,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   box-shadow:var(--shadow-el)
 }
 .oab-msg-user .oab-bubble{
-  background:var(--c-navy);color:#fff;
+  background:var(--j-primary);color:#fff;
   border-radius:var(--radius-msg) var(--radius-msg) 4px var(--radius-msg)
 }
 .oab-time{font-size:10px;color:var(--c-muted);padding:0 4px;display:block}
@@ -550,7 +551,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── sugestões ── */
 .oab-suggestions{
   display:flex;gap:8px;
-  padding:12px 0 16px 20px;
+  padding:12px 0 14px 20px;
   background:var(--c-surface);
   border-top:1px solid var(--c-border);
   overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;
@@ -560,14 +561,14 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 .oab-chip{
   padding:7px 14px;background:var(--c-white);
   border:1.5px solid var(--c-border);border-radius:20px;
-  font-size:12.5px;color:var(--c-blue);font-weight:500;
+  font-size:12.5px;color:var(--j-dark);font-weight:500;
   cursor:pointer;white-space:nowrap;flex-shrink:0;
   transition:all .15s ease;
   font-family:'DM Sans',system-ui,sans-serif;
-  box-shadow:0 1px 4px rgba(0,0,0,.06)
+  box-shadow:0 1px 4px rgba(0,0,0,.05)
 }
 .oab-chip:last-child{margin-right:20px}
-.oab-chip:hover{background:var(--c-navy);border-color:var(--c-navy);color:#fff;box-shadow:0 4px 12px rgba(0,51,102,.2)}
+.oab-chip:hover{background:var(--j-primary);border-color:var(--j-primary);color:#fff;box-shadow:0 4px 12px rgba(73,176,134,.3)}
 
 /* ── input ── */
 .oab-input-row{
@@ -584,17 +585,17 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   max-height:88px;overflow-y:auto;
   transition:border-color .15s,background .15s
 }
-.oab-input:focus{border-color:var(--c-blue);background:#fff}
+.oab-input:focus{border-color:var(--j-primary);background:#fff}
 .oab-input::placeholder{color:var(--c-muted)}
 .oab-send{
-  width:38px;height:38px;border-radius:50%;
-  background:var(--c-navy);border:none;cursor:pointer;
+  width:40px;height:40px;border-radius:50%;
+  background:var(--j-primary);border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;outline:none;color:#fff;
-  box-shadow:0 3px 10px rgba(0,51,102,.30);
+  box-shadow:0 3px 12px rgba(73,176,134,.40);
   transition:background .15s,transform .15s,box-shadow .15s
 }
-.oab-send:hover{background:var(--c-blue);transform:scale(1.06);box-shadow:0 5px 14px rgba(0,51,102,.35)}
+.oab-send:hover{background:var(--j-dark);transform:scale(1.06);box-shadow:0 5px 16px rgba(73,176,134,.45)}
 .oab-send:disabled{background:var(--c-border);cursor:not-allowed;transform:none;box-shadow:none}
 
 /* ── footer ── */
@@ -607,9 +608,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── toggle ── */
 .oab-toggle{
   width:56px;height:56px;border-radius:50%;
-  background:linear-gradient(145deg,#003d80,var(--c-navy));
+  background:linear-gradient(145deg,var(--j-darker),var(--j-primary));
   border:none;
-  box-shadow:0 8px 24px rgba(0,51,102,.45),0 3px 8px rgba(0,0,0,.15);
+  box-shadow:0 8px 24px rgba(73,176,134,.50),0 3px 8px rgba(0,0,0,.12);
   cursor:pointer;outline:none;color:#fff;
   display:flex;align-items:center;justify-content:center;
   margin-left:auto;margin-top:12px;
@@ -617,10 +618,10 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 }
 .oab-toggle:hover{
   transform:scale(1.08) translateY(-2px);
-  box-shadow:0 14px 32px rgba(0,51,102,.50),0 4px 12px rgba(0,0,0,.18)
+  box-shadow:0 14px 32px rgba(73,176,134,.55),0 4px 12px rgba(0,0,0,.15)
 }
 .oab-toggle.oab-btn-open{
-  background:linear-gradient(145deg,#0068cc,var(--c-blue))
+  background:linear-gradient(145deg,var(--j-dark),var(--j-primary))
 }
 
 /* ── responsivo ── */
