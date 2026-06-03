@@ -372,7 +372,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB · v12</div>
+        <div class="oab-footer">Assistente IA · OAB · v13</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -545,24 +545,21 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── sugestões ── */
 #__oab_root .oab-suggestions-wrap{
-  position:relative !important;background:#fff !important;flex-shrink:0 !important;width:100% !important
+  background:#fff !important;flex-shrink:0 !important;width:100% !important
 }
 #__oab_root .oab-suggestions{
   display:flex !important;gap:8px !important;
-  padding:8px 24px 14px 24px !important;
-  overflow-x:auto !important;overflow-y:hidden !important;flex-wrap:nowrap !important;
-  scroll-behavior:smooth !important;scrollbar-width:none !important;-ms-overflow-style:none !important
+  padding:4px 24px 16px 24px !important;
+  flex-wrap:wrap !important;
 }
-#__oab_root .oab-suggestions::-webkit-scrollbar{display:none}
-#__oab_root .oab-suggestions::after{content:'';flex:0 0 1px;min-width:16px}
 #__oab_root .oab-chip{
-  padding:10px 16px !important;background:#fff !important;
-  border:1px solid #49b086 !important;border-radius:100px !important;
-  font-size:13px !important;color:#49b086 !important;font-weight:500 !important;
-  cursor:pointer !important;white-space:nowrap !important;flex-shrink:0 !important;
+  padding:7px 14px !important;background:#fff !important;
+  border:1.5px solid #49b086 !important;border-radius:100px !important;
+  font-size:12px !important;color:#49b086 !important;font-weight:500 !important;
+  cursor:pointer !important;white-space:nowrap !important;
   transition:all .2s ease !important;font-family:'DM Sans',system-ui,sans-serif !important
 }
-#__oab_root .oab-chip:hover{background:#eef8f4 !important}
+#__oab_root .oab-chip:hover{background:#eef8f4 !important;border-color:#3a8a6a !important;color:#3a8a6a !important}
 
 /* ── input ── */
 #__oab_root .oab-input-row{
