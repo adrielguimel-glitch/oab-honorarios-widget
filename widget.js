@@ -432,7 +432,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── painel ── */
 .oab-panel{
   position:absolute;bottom:72px;right:0;
-  width:360px;background:var(--c-white);
+  width:380px;background:var(--c-white);
   border-radius:var(--radius-panel);
   box-shadow:var(--shadow-panel);
   overflow:hidden;isolation:isolate;
@@ -444,30 +444,30 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── header ── */
 .oab-header{
-  background:var(--c-navy);padding:16px 20px;
-  display:flex;align-items:center;gap:12px;flex-shrink:0
+  background:var(--c-navy);padding:20px 24px;
+  display:flex;align-items:center;gap:14px;flex-shrink:0
 }
 .oab-header-shield{
-  width:40px;height:40px;background:var(--c-gold);
-  border-radius:9px 9px 16px 16px;display:flex;
+  width:44px;height:44px;background:var(--c-gold);
+  border-radius:10px 10px 18px 18px;display:flex;
   align-items:center;justify-content:center;
   font-size:14px;font-weight:700;color:#fff;flex-shrink:0;
   font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.5px;
-  box-shadow:0 3px 10px rgba(0,0,0,.25)
+  box-shadow:0 4px 12px rgba(0,0,0,.28)
 }
-.oab-header-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.oab-header-info{display:flex;flex-direction:column;gap:3px;min-width:0}
 .oab-header-info strong{
-  font-size:14px;font-weight:600;color:#fff;
+  font-size:14.5px;font-weight:600;color:#fff;
   letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
-.oab-header-info span{font-size:11.5px;color:rgba(255,255,255,.5)}
+.oab-header-info span{font-size:12px;color:rgba(255,255,255,.5)}
 .oab-status{
   margin-left:auto;flex-shrink:0;
-  display:flex;align-items:center;gap:5px;
-  font-size:11px;color:rgba(255,255,255,.5)
+  display:flex;align-items:center;gap:6px;
+  font-size:11.5px;color:rgba(255,255,255,.5)
 }
 .oab-dot{
-  width:7px;height:7px;background:var(--c-green);
+  width:8px;height:8px;background:var(--c-green);
   border-radius:50%;flex-shrink:0;
   animation:oab-pulse 2s ease-in-out infinite
 }
@@ -475,8 +475,8 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── mensagens ── */
 .oab-messages{
-  overflow-y:auto;padding:16px;
-  display:flex;flex-direction:column;gap:12px;
+  overflow-y:auto;padding:20px;
+  display:flex;flex-direction:column;gap:14px;
   background:var(--c-surface);
   min-height:200px;max-height:320px;flex:1
 }
@@ -548,8 +548,8 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── sugestões ── */
 .oab-suggestions{
-  display:flex;gap:7px;
-  padding:10px 16px 13px;
+  display:flex;gap:8px;
+  padding:12px 20px 16px;
   background:var(--c-surface);
   border-top:1px solid var(--c-border);
   overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;
@@ -557,25 +557,25 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 }
 .oab-suggestions::-webkit-scrollbar{display:none}
 .oab-chip{
-  padding:6px 13px;background:var(--c-white);
+  padding:7px 14px;background:var(--c-white);
   border:1.5px solid var(--c-border);border-radius:20px;
-  font-size:12px;color:var(--c-blue);font-weight:500;
+  font-size:12.5px;color:var(--c-blue);font-weight:500;
   cursor:pointer;white-space:nowrap;flex-shrink:0;
   transition:all .15s ease;
   font-family:'DM Sans',system-ui,sans-serif;
-  box-shadow:0 1px 3px rgba(0,0,0,.06)
+  box-shadow:0 1px 4px rgba(0,0,0,.06)
 }
-.oab-chip:hover{background:var(--c-navy);border-color:var(--c-navy);color:#fff;box-shadow:0 3px 10px rgba(0,51,102,.2)}
+.oab-chip:hover{background:var(--c-navy);border-color:var(--c-navy);color:#fff;box-shadow:0 4px 12px rgba(0,51,102,.2)}
 
 /* ── input ── */
 .oab-input-row{
-  border-top:1px solid var(--c-border);padding:12px 14px;
-  display:flex;gap:8px;align-items:flex-end;
+  border-top:1px solid var(--c-border);padding:14px 20px;
+  display:flex;gap:10px;align-items:flex-end;
   background:var(--c-white);flex-shrink:0
 }
 .oab-input{
-  flex:1;border:1.5px solid var(--c-border);border-radius:22px;
-  padding:9px 16px;font-size:13.5px;
+  flex:1;border:1.5px solid var(--c-border);border-radius:24px;
+  padding:10px 18px;font-size:13.5px;
   font-family:'DM Sans',system-ui,sans-serif;
   color:var(--c-text);background:var(--c-surface);
   resize:none;outline:none;line-height:1.45;
@@ -622,7 +622,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 }
 
 /* ── responsivo ── */
-@media(max-width:430px){
+@media(max-width:440px){
   .oab-panel{width:calc(100vw - 32px);right:-8px}
 }`;
 
