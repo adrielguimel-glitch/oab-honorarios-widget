@@ -399,6 +399,51 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const resetBtn  = root.querySelector('.oab-reset');
     const msgs      = root.querySelector('.oab-messages');
     const suggWrap  = root.querySelector('.oab-suggestions-wrap');
+    const dragHandle = root.querySelector('.oab-drag-handle');
+
+    // ── Redimensionamento por drag ────────────────────────────────────────
+    let dragStartY = 0, dragStartH = 0;
+
+    dragHandle.addEventListener('mousedown', e => {
+      dragStartY = e.clientY;
+      dragStartH = panel.getBoundingClientRect().height;
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+
+      const onMove = e => {
+        const delta = dragStartY - e.clientY; // arrasta pra cima → positivo → maior
+        const newH  = Math.min(Math.max(280, dragStartH + delta), window.innerHeight - 110);
+        panel.style.setProperty('height', newH + 'px', 'important');
+        panel.style.setProperty('max-height', newH + 'px', 'important');
+      };
+      const onUp = () => {
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+
+    // Touch support
+    dragHandle.addEventListener('touchstart', e => {
+      dragStartY = e.touches[0].clientY;
+      dragStartH = panel.getBoundingClientRect().height;
+      e.preventDefault();
+
+      const onMove = e => {
+        const delta = dragStartY - e.touches[0].clientY;
+        const newH  = Math.min(Math.max(280, dragStartH + delta), window.innerHeight - 110);
+        panel.style.setProperty('height', newH + 'px', 'important');
+        panel.style.setProperty('max-height', newH + 'px', 'important');
+      };
+      const onEnd = () => {
+        dragHandle.removeEventListener('touchmove', onMove);
+        dragHandle.removeEventListener('touchend', onEnd);
+      };
+      dragHandle.addEventListener('touchmove', onMove, { passive: false });
+      dragHandle.addEventListener('touchend', onEnd);
+    }, { passive: false });
 
     toggle.addEventListener('click', () => {
       isOpen = !isOpen;
@@ -559,6 +604,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
     root.innerHTML = `
       <div class="oab-panel">
+        <div class="oab-drag-handle" title="Arraste para redimensionar"></div>
         <div class="oab-header">
           <div class="oab-header-shield">OAB</div>
           <div class="oab-header-info">
@@ -827,6 +873,23 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   font-weight:600 !important;cursor:pointer !important
 }
 #__oab_root .oab-footer-link:hover{color:var(--j-dark) !important}
+
+/* ── drag handle ── */
+#__oab_root .oab-drag-handle{
+  height:18px !important;width:100% !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;
+  cursor:ns-resize !important;flex-shrink:0 !important;
+  background:transparent !important;
+}
+#__oab_root .oab-drag-handle::after{
+  content:'' !important;
+  width:36px !important;height:4px !important;
+  background:#d1d5db !important;border-radius:2px !important;
+  transition:background .15s !important
+}
+#__oab_root .oab-drag-handle:hover::after{
+  background:var(--j-primary) !important
+}
 
 /* ── toggle ── */
 #__oab_root .oab-toggle{
