@@ -370,7 +370,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB</div>
+        <div class="oab-footer">Assistente IA · OAB · v4</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -597,7 +597,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── footer ── */
 .oab-footer{
-  padding:7px;text-align:center;font-size:10px;
+  padding:8px;text-align:center;font-size:10px;
   color:var(--c-muted);background:var(--c-white);
   border-top:1px solid var(--c-border);flex-shrink:0;letter-spacing:.2px
 }
