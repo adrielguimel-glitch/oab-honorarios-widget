@@ -231,11 +231,10 @@ Seu papel:
 
 Regras:
 1. O conteúdo está em formato estruturado: "Descrição do serviço | Valor | %" — esses SÃO os honorários.
-2. NUNCA diga para o advogado "consultar a tabela" ou "verificar a resolução" se o valor já está no conteúdo acima.
-3. Se encontrar, cite o valor exato que está no conteúdo.
-4. Se houver múltiplos itens relevantes, liste todos.
-5. Se realmente não encontrar nenhum valor relacionado, diga com clareza.
-6. Seja conciso: máximo 3 parágrafos curtos.
+2. NUNCA diga para o advogado "consultar a tabela" se o valor já está no conteúdo acima.
+3. Na resposta de texto escreva APENAS uma frase curta de contexto (ex: "Encontrei os honorários para divórcio consensual:"). NÃO liste valores no texto — eles serão exibidos automaticamente na tabela abaixo.
+4. Todos os valores encontrados devem estar SOMENTE no bloco oab_result, nunca repetidos no texto.
+5. Se realmente não encontrar, explique brevemente.
 5. Ao final, inclua SEMPRE este bloco (mesmo se não encontrar):
 
 <oab_result>
@@ -863,13 +862,23 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   letter-spacing:.7px !important;color:var(--c-ok) !important;margin-bottom:8px !important
 }
 #__oab_root .oab-result-row{
-  display:flex !important;justify-content:space-between !important;
-  font-size:12.5px !important;padding:5px 0 !important;
+  display:grid !important;
+  grid-template-columns:1fr auto !important;
+  gap:6px 12px !important;
+  font-size:13px !important;padding:7px 0 !important;
+  align-items:start !important;
   border-bottom:1px solid rgba(22,101,52,.1) !important
 }
 #__oab_root .oab-result-row:last-of-type{border-bottom:none !important}
-#__oab_root .oab-result-row span:first-child{color:var(--c-text) !important;flex:1 !important;padding-right:10px !important}
-#__oab_root .oab-result-row span:last-child{font-weight:700 !important;color:var(--c-ok) !important;white-space:nowrap !important}
+#__oab_root .oab-result-row span:first-child{
+  color:var(--c-text) !important;line-height:1.4 !important;
+  word-break:break-word !important
+}
+#__oab_root .oab-result-row span:last-child{
+  font-weight:700 !important;color:var(--c-ok) !important;
+  white-space:nowrap !important;text-align:right !important;
+  padding-top:1px !important
+}
 #__oab_root .oab-scroll-cta{
   margin-top:10px !important;padding-top:8px !important;
   border-top:1px solid rgba(22,101,52,.12) !important;
