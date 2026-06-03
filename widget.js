@@ -74,11 +74,9 @@
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // API CLAUDE
+  // API — suporta proxy (Anthropic/Claude) e modo direto (OpenAI)
   // ─────────────────────────────────────────────────────────────────────────
   async function askAI(userMessage, pageContent) {
-    const endpoint = CONFIG.proxyUrl || 'https://api.openai.com/v1/chat/completions';
-
     const systemPrompt = `Você é um assistente jurídico especializado em honorários advocatícios.
 
 O CONTEÚDO ATUAL DA PÁGINA é:
@@ -111,31 +109,45 @@ Regras:
 
 Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword": "" }`;
 
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${CONFIG.apiKey}`,
-    };
+    let endpoint, headers, body, getRawText;
 
-    const body = JSON.stringify({
-      model: 'gpt-4o-mini',
-      max_tokens: 1000,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userMessage },
-      ],
-    });
+    if (CONFIG.proxyUrl) {
+      // Modo proxy → Anthropic/Claude (chave fica no servidor)
+      endpoint = CONFIG.proxyUrl;
+      headers = { 'Content-Type': 'application/json' };
+      body = JSON.stringify({
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }],
+      });
+      getRawText = (data) => data?.content?.[0]?.text || '';
+    } else {
+      // Modo direto → OpenAI (chave no data-api-key)
+      endpoint = 'https://api.openai.com/v1/chat/completions';
+      headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${CONFIG.apiKey}`,
+      };
+      body = JSON.stringify({
+        model: 'gpt-4o-mini',
+        max_tokens: 1000,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage },
+        ],
+      });
+      getRawText = (data) => data?.choices?.[0]?.message?.content || '';
+    }
 
     const response = await fetch(endpoint, { method: 'POST', headers, body });
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `HTTP ${response.status}`);
+      throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
     }
 
     const data = await response.json();
-    const raw = data?.choices?.[0]?.message?.content || '';
+    const raw = getRawText(data);
 
-    // Extrai bloco de resultado estruturado
     const match = raw.match(/<oab_result>([\s\S]*?)<\/oab_result>/);
     let result = null;
     if (match) {
