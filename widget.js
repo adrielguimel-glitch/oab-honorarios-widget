@@ -17,15 +17,16 @@
   })();
 
   const CONFIG = {
-    apiKey:    scriptTag.getAttribute('data-api-key') || '',
-    position:  scriptTag.getAttribute('data-position') || 'bottom-right',
-    title:     scriptTag.getAttribute('data-title') || 'Assistente de Honorários',
-    subtitle:  scriptTag.getAttribute('data-subtitle') || 'Tabela OAB • IA',
-    proxyUrl:  scriptTag.getAttribute('data-proxy-url') || '',
-    contentUrl: scriptTag.getAttribute('data-content-url') || '', // API JSON para SPAs
-    selector:  scriptTag.getAttribute('data-selector') || 'body',
-    lang:      scriptTag.getAttribute('data-lang') || 'pt-BR',
-    mock:      scriptTag.getAttribute('data-mock') === 'true',
+    apiKey:     scriptTag.getAttribute('data-api-key') || '',
+    position:   scriptTag.getAttribute('data-position') || 'bottom-right',
+    title:      scriptTag.getAttribute('data-title') || 'Assistente de Honorários',
+    subtitle:   scriptTag.getAttribute('data-subtitle') || 'Tabela OAB • IA',
+    proxyUrl:   scriptTag.getAttribute('data-proxy-url') || '',
+    contentUrl: scriptTag.getAttribute('data-content-url') || '',
+    selector:   scriptTag.getAttribute('data-selector') || 'body',
+    lang:       scriptTag.getAttribute('data-lang') || 'pt-BR',
+    mock:       scriptTag.getAttribute('data-mock') === 'true',
+    height:     parseInt(scriptTag.getAttribute('data-height') || '480', 10),
   };
 
   // ─── Evitar inicialização dupla ───────────────────────────────────────────
@@ -305,39 +306,54 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   function smartScroll(keyword) {
     if (!keyword) return;
 
-    const kw = keyword.toLowerCase().trim();
+    const kw    = keyword.toLowerCase().trim();
     const words = kw.split(/\s+/).filter(w => w.length > 3);
-    const candidates = Array.from(document.querySelectorAll(
-      'h1,h2,h3,h4,h5,h6,td,th,li,p,dt,dd,span,button,[class*="title"],[class*="header"]'
-    )).filter(el => !el.closest('#__oab_root'));
 
-    // 1. Match exato
-    let found = candidates.find(el => {
-      const t = (el.textContent || '').toLowerCase();
-      return t.includes(kw) && t.length < 300;
-    });
+    // Busca em TODOS os elementos incluindo os de frameworks (div, span, etc.)
+    const all = Array.from(document.querySelectorAll('*'))
+      .filter(el => !el.closest('#__oab_root') && !['script','style'].includes(el.tagName.toLowerCase()));
 
-    // 2. Match por palavras individuais (≥2 palavras coincidindo)
+    // 1. Match exato no textContent
+    let found = all.find(el =>
+      el.children.length <= 3 &&
+      (el.textContent || '').toLowerCase().includes(kw) &&
+      el.textContent.length < 400
+    );
+
+    // 2. Match por palavras (60% das palavras com >3 chars)
     if (!found && words.length >= 2) {
-      found = candidates.find(el => {
+      found = all.find(el => {
+        if (el.children.length > 3) return false;
         const t = (el.textContent || '').toLowerCase();
-        const hits = words.filter(w => t.includes(w)).length;
-        return hits >= Math.ceil(words.length * 0.6) && t.length < 400;
+        if (t.length > 500) return false;
+        return words.filter(w => t.includes(w)).length >= Math.ceil(words.length * 0.6);
       });
     }
 
-    if (found) {
-      // Expande acordeão pai se existir
-      let parent = found.parentElement;
-      while (parent && parent !== document.body) {
-        if (getComputedStyle(parent).display === 'none') {
-          parent.style.display = 'block';
+    if (!found) return;
+
+    // Tenta expandir acordeões no caminho até o elemento
+    let node = found.parentElement;
+    while (node && node !== document.body) {
+      const style = window.getComputedStyle(node);
+      if (style.display === 'none' || style.visibility === 'hidden' || style.height === '0px') {
+        // Tenta clicar no header do acordeão (elemento clicável anterior)
+        const clickTarget = node.previousElementSibling || node.parentElement?.querySelector('[class*="header"],[class*="title"],[class*="toggle"],[class*="accordion"]');
+        if (clickTarget) {
+          try { clickTarget.click(); } catch(_) {}
+          setTimeout(() => {
+            found.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            highlightElement(found);
+          }, 400);
+          return;
         }
-        parent = parent.parentElement;
+        node.style.display = 'block';
       }
-      found.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      highlightElement(found);
+      node = node.parentElement;
     }
+
+    found.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    highlightElement(found);
   }
 
   function highlightElement(el) {
@@ -538,7 +554,8 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const root = document.createElement('div');
     root.id = '__oab_root';
     root.className = 'widget-oab-root';
-    root.style.cssText = `position:fixed;bottom:24px;${pos}z-index:2147483647;font-family:'DM Sans',system-ui,sans-serif;`;
+    const msgsH = Math.max(160, CONFIG.height - 220); // subtrai header+chips+input+footer
+    root.style.cssText = `position:fixed;bottom:24px;${pos}z-index:2147483647;font-family:'DM Sans',system-ui,sans-serif;--oab-msgs-height:${msgsH}px;`;
 
     root.innerHTML = `
       <div class="oab-panel">
@@ -685,7 +702,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 #__oab_root .oab-messages{
   overflow-y:auto !important;padding:24px 24px 12px !important;
   display:flex !important;flex-direction:column !important;gap:12px !important;
-  background:#fff !important;min-height:160px !important;max-height:300px !important;flex:1 !important
+  background:#fff !important;min-height:160px !important;max-height:var(--oab-msgs-height,380px) !important;flex:1 !important
 }
 #__oab_root .oab-messages::-webkit-scrollbar{width:3px}
 #__oab_root .oab-messages::-webkit-scrollbar-thumb{background:#c5d9d3;border-radius:4px}
