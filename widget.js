@@ -48,61 +48,46 @@
     const root = document.querySelector(CONFIG.selector) || document.body;
     const clone = root.cloneNode(true);
 
-    const NOISE = ['script','style','noscript','iframe','nav','header','footer',
-      '[role="navigation"]','[role="banner"]','[role="contentinfo"]','.widget-oab-root'];
-    NOISE.forEach(sel => clone.querySelectorAll(sel).forEach(el => el.remove()));
+    ['script','style','noscript','iframe','nav','header','footer','.widget-oab-root']
+      .forEach(sel => clone.querySelectorAll(sel).forEach(el => el.remove()));
 
-    let lines = [];
+    const parts = [];
 
-    // Percorre a árvore preservando estrutura de títulos e tabelas
-    function walk(node) {
-      if (node.nodeType === 3) { // texto
-        const t = node.textContent.trim();
-        if (t) lines.push(t);
-        return;
-      }
-      if (node.nodeType !== 1) return;
+    // Percorre em ordem de documento: títulos e linhas de tabela
+    clone.querySelectorAll('h1,h2,h3,h4,h5,h6,tr,li,p').forEach(el => {
+      const tag = el.tagName.toLowerCase();
 
-      const tag = node.tagName.toLowerCase();
-
-      // Títulos → linha em destaque
       if (/^h[1-6]$/.test(tag)) {
-        const t = node.textContent.trim();
-        if (t) lines.push('\n## ' + t);
+        const t = el.textContent.replace(/\s+/g, ' ').trim();
+        if (t) parts.push('\n## ' + t);
         return;
       }
 
-      // Linhas de tabela → células separadas por " | "
       if (tag === 'tr') {
-        const cells = Array.from(node.querySelectorAll('th,td'))
-          .map(c => c.textContent.trim())
+        // Ignora tr aninhado dentro de outro tr
+        if (el.parentElement && el.parentElement.closest('tr')) return;
+        const cells = Array.from(el.querySelectorAll('td,th'))
+          .map(c => c.textContent.replace(/\s+/g, ' ').trim())
           .filter(Boolean);
-        if (cells.length) lines.push(cells.join(' | '));
+        if (cells.length >= 2) parts.push(cells.join(' | '));
         return;
       }
 
-      // Itens de lista
       if (tag === 'li') {
-        const t = node.textContent.trim();
-        if (t) lines.push('- ' + t);
+        const t = el.textContent.replace(/\s+/g, ' ').trim();
+        if (t && t.length < 250) parts.push('- ' + t);
         return;
       }
 
-      // Parágrafo → quebra de linha
-      if (tag === 'p' || tag === 'div' || tag === 'section' || tag === 'article') {
-        node.childNodes.forEach(walk);
-        lines.push('');
-        return;
+      if (tag === 'p') {
+        const t = el.textContent.replace(/\s+/g, ' ').trim();
+        if (t && t.length < 400 && !el.querySelector('table,tr')) parts.push(t);
       }
+    });
 
-      node.childNodes.forEach(walk);
-    }
-
-    walk(clone);
-
-    let text = lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
-    if (text.length > 14000) {
-      text = text.slice(0, 14000) + '\n\n[... conteúdo truncado ...]';
+    let text = parts.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+    if (text.length > 20000) {
+      text = text.slice(0, 20000) + '\n\n[... conteúdo truncado ...]';
     }
     return text;
   }
@@ -172,10 +157,12 @@ Seu papel:
 - Responder de forma clara, direta e em português
 
 Regras:
-1. Baseie-se APENAS no conteúdo da página fornecido. Não invente valores.
-2. Se encontrar mais de um honorário relevante, liste todos.
-3. Se não encontrar, diga claramente e sugira onde o advogado pode buscar.
-4. Seja conciso: máximo 3 parágrafos curtos.
+1. O conteúdo está em formato estruturado: "Descrição do serviço | Valor | %" — esses SÃO os honorários.
+2. NUNCA diga para o advogado "consultar a tabela" ou "verificar a resolução" se o valor já está no conteúdo acima.
+3. Se encontrar, cite o valor exato que está no conteúdo.
+4. Se houver múltiplos itens relevantes, liste todos.
+5. Se realmente não encontrar nenhum valor relacionado, diga com clareza.
+6. Seja conciso: máximo 3 parágrafos curtos.
 5. Ao final, inclua SEMPRE este bloco (mesmo se não encontrar):
 
 <oab_result>
@@ -486,7 +473,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · <a class="oab-footer-link" href="https://jusfy.com.br/" target="_blank" rel="noopener">Feito por JUSFY</a> · v13</div>
+        <div class="oab-footer">Assistente IA · <a class="oab-footer-link" href="https://jusfy.com.br/" target="_blank" rel="noopener">Feito por JUSFY</a> · v14</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
