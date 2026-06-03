@@ -372,7 +372,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB · v13</div>
+        <div class="oab-footer">Assistente IA · Feito por JUSFY · v13</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
