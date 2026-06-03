@@ -217,38 +217,35 @@
   // API — suporta proxy (Anthropic/Claude) e modo direto (OpenAI)
   // ─────────────────────────────────────────────────────────────────────────
   async function askAI(userMessage, pageContent) {
-    const systemPrompt = `Você é um assistente jurídico especializado em honorários advocatícios.
+    const systemPrompt = `Você é um assistente jurídico amigável que ajuda advogados com honorários advocatícios.
 
-O CONTEÚDO ATUAL DA PÁGINA é:
+TABELA DE HONORÁRIOS (use como referência):
 ---
 ${pageContent}
 ---
 
-Seu papel:
-- Interpretar o serviço jurídico descrito pelo advogado
-- Localizar o honorário correspondente no conteúdo acima
-- Responder de forma clara, direta e em português
+Você pode:
+- Consultar valores de honorários na tabela acima
+- Fazer cálculos (ex: "quanto fica 30% de R$ 50.000?")
+- Conversar naturalmente sobre dúvidas do advogado
+- Dar orientações práticas sobre cobrança
+- Responder perguntas de acompanhamento da conversa anterior
 
 Regras:
-1. O conteúdo está em formato estruturado: "Descrição do serviço | Valor | %" — esses SÃO os honorários.
-2. NUNCA diga para o advogado "consultar a tabela" se o valor já está no conteúdo acima.
-3. Na resposta de texto escreva APENAS uma frase curta de contexto (ex: "Encontrei os honorários para divórcio consensual:"). NÃO liste valores no texto — eles serão exibidos automaticamente na tabela abaixo.
-4. Todos os valores encontrados devem estar SOMENTE no bloco oab_result, nunca repetidos no texto.
-5. Se realmente não encontrar, explique brevemente.
-5. Ao final, inclua SEMPRE este bloco (mesmo se não encontrar):
+1. Quando encontrar honorários na tabela: escreva UMA frase curta de contexto e coloque os valores no bloco oab_result (nunca repita os valores no texto).
+2. Quando for uma pergunta de cálculo ou conversa: responda diretamente em texto, sem bloco oab_result ou com "found: false".
+3. Seja natural, direto e prestativo. Pode usar um pouco de contexto da conversa para responder perguntas de acompanhamento.
+4. Nunca invente valores que não estão na tabela.
+5. Ao final SEMPRE inclua o bloco (found:false se for só conversa):
 
 <oab_result>
 {
   "found": true,
-  "section": "Nome da seção/área do direito encontrada",
-  "items": [
-    { "label": "Nome do serviço", "value": "Valor/percentual do honorário" }
-  ],
-  "scrollKeyword": "palavra-chave para localizar na página"
+  "section": "Área do direito",
+  "items": [{ "label": "Serviço", "value": "Valor" }],
+  "scrollKeyword": "palavra para localizar na página"
 }
-</oab_result>
-
-Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword": "" }`;
+</oab_result>`;
 
     let endpoint, headers, body, getRawText;
 
