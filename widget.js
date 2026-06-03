@@ -232,8 +232,8 @@ Você pode:
 - Responder perguntas de acompanhamento da conversa anterior
 
 Regras:
-1. Quando encontrar honorários na tabela: escreva UMA frase curta de contexto e coloque os valores no bloco oab_result (nunca repita os valores no texto).
-2. Quando for uma pergunta de cálculo ou conversa: responda diretamente em texto, sem bloco oab_result ou com "found: false".
+1. Quando encontrar honorários na tabela: escreva UMA frase curtíssima de contexto (ex: "Encontrei os honorários:") e coloque os valores SOMENTE no bloco oab_result. JAMAIS escreva valores (R$, %) no texto da resposta.
+2. Quando for cálculo ou conversa: responda em texto livre, use "found: false" no bloco.
 3. Seja natural, direto e prestativo. Pode usar um pouco de contexto da conversa para responder perguntas de acompanhamento.
 4. Nunca invente valores que não estão na tabela.
 5. Ao final SEMPRE inclua o bloco (found:false se for só conversa):
@@ -306,51 +306,60 @@ Regras:
     const kw    = keyword.toLowerCase().trim();
     const words = kw.split(/\s+/).filter(w => w.length > 3);
 
-    // Busca em TODOS os elementos incluindo os de frameworks (div, span, etc.)
-    const all = Array.from(document.querySelectorAll('*'))
-      .filter(el => !el.closest('#__oab_root') && !['script','style'].includes(el.tagName.toLowerCase()));
+    const isWidget = el => !!el.closest('#__oab_root');
+    const skip     = new Set(['script','style','noscript','svg','path','head']);
 
-    // 1. Match exato no textContent
-    let found = all.find(el =>
-      el.children.length <= 3 &&
-      (el.textContent || '').toLowerCase().includes(kw) &&
-      el.textContent.length < 400
-    );
-
-    // 2. Match por palavras (60% das palavras com >3 chars)
-    if (!found && words.length >= 2) {
-      found = all.find(el => {
-        if (el.children.length > 3) return false;
-        const t = (el.textContent || '').toLowerCase();
-        if (t.length > 500) return false;
-        return words.filter(w => t.includes(w)).length >= Math.ceil(words.length * 0.6);
-      });
+    function scoreEl(el) {
+      if (isWidget(el)) return 0;
+      if (skip.has(el.tagName.toLowerCase())) return 0;
+      const t = (el.textContent || '').toLowerCase();
+      if (!t || t.length > 600) return 0;
+      if (t.includes(kw)) return 10 - Math.min(el.children.length, 5);
+      if (words.length >= 2) {
+        const hits = words.filter(w => t.includes(w)).length;
+        if (hits >= Math.ceil(words.length * 0.6)) return hits - Math.min(el.children.length, 5);
+      }
+      return 0;
     }
 
-    if (!found) return;
+    let best = null, bestScore = 0;
+    document.querySelectorAll('*').forEach(el => {
+      const s = scoreEl(el);
+      if (s > bestScore) { bestScore = s; best = el; }
+    });
 
-    // Tenta expandir acordeões no caminho até o elemento
-    let node = found.parentElement;
-    while (node && node !== document.body) {
-      const style = window.getComputedStyle(node);
-      if (style.display === 'none' || style.visibility === 'hidden' || style.height === '0px') {
-        // Tenta clicar no header do acordeão (elemento clicável anterior)
-        const clickTarget = node.previousElementSibling || node.parentElement?.querySelector('[class*="header"],[class*="title"],[class*="toggle"],[class*="accordion"]');
-        if (clickTarget) {
-          try { clickTarget.click(); } catch(_) {}
-          setTimeout(() => {
-            found.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            highlightElement(found);
-          }, 400);
+    if (!best) return;
+
+    // Procura acordeão fechado na ancestralidade e clica para abrir
+    function openAccordions(el, cb) {
+      const path = [];
+      let node = el.parentElement;
+      while (node && node !== document.body) { path.push(node); node = node.parentElement; }
+
+      const collapsed = path.find(n => {
+        const s = window.getComputedStyle(n);
+        return s.display === 'none' || s.visibility === 'hidden' ||
+               (s.overflow === 'hidden' && n.scrollHeight > n.clientHeight + 5 && n.clientHeight < 10);
+      });
+
+      if (collapsed) {
+        // Tenta clicar no irmão anterior (header do acordeão) ou no pai
+        const trigger = collapsed.previousElementSibling
+          || collapsed.parentElement?.querySelector('[role="button"],[class*="title"],[class*="header"],[class*="toggle"],[class*="arrow"],[class*="expand"]');
+        if (trigger && !isWidget(trigger)) {
+          try { trigger.click(); } catch(_) {}
+          setTimeout(cb, 500);
           return;
         }
-        node.style.display = 'block';
+        collapsed.style.display = 'block';
       }
-      node = node.parentElement;
+      cb();
     }
 
-    found.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    highlightElement(found);
+    openAccordions(best, () => {
+      best.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      highlightElement(best);
+    });
   }
 
   function highlightElement(el) {
