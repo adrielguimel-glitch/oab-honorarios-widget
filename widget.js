@@ -46,46 +46,17 @@
   // ─────────────────────────────────────────────────────────────────────────
   function extractPageContent() {
     const root = document.querySelector(CONFIG.selector) || document.body;
-    const clone = root.cloneNode(true);
 
-    ['script','style','noscript','iframe','nav','header','footer','.widget-oab-root']
-      .forEach(sel => clone.querySelectorAll(sel).forEach(el => el.remove()));
+    // Esconde o widget para não incluí-lo no texto extraído
+    const widgetEl = document.getElementById('__oab_root');
+    if (widgetEl) widgetEl.style.visibility = 'hidden';
 
-    const parts = [];
+    let text = (root.innerText || '').trim();
 
-    // Percorre em ordem de documento: títulos e linhas de tabela
-    clone.querySelectorAll('h1,h2,h3,h4,h5,h6,tr,li,p').forEach(el => {
-      const tag = el.tagName.toLowerCase();
+    if (widgetEl) widgetEl.style.visibility = '';
 
-      if (/^h[1-6]$/.test(tag)) {
-        const t = el.textContent.replace(/\s+/g, ' ').trim();
-        if (t) parts.push('\n## ' + t);
-        return;
-      }
+    text = text.replace(/\n{3,}/g, '\n\n').replace(/[ \t]{2,}/g, ' ').trim();
 
-      if (tag === 'tr') {
-        // Ignora tr aninhado dentro de outro tr
-        if (el.parentElement && el.parentElement.closest('tr')) return;
-        const cells = Array.from(el.querySelectorAll('td,th'))
-          .map(c => c.textContent.replace(/\s+/g, ' ').trim())
-          .filter(Boolean);
-        if (cells.length >= 2) parts.push(cells.join(' | '));
-        return;
-      }
-
-      if (tag === 'li') {
-        const t = el.textContent.replace(/\s+/g, ' ').trim();
-        if (t && t.length < 250) parts.push('- ' + t);
-        return;
-      }
-
-      if (tag === 'p') {
-        const t = el.textContent.replace(/\s+/g, ' ').trim();
-        if (t && t.length < 400 && !el.querySelector('table,tr')) parts.push(t);
-      }
-    });
-
-    let text = parts.join('\n').replace(/\n{3,}/g, '\n\n').trim();
     if (text.length > 20000) {
       text = text.slice(0, 20000) + '\n\n[... conteúdo truncado ...]';
     }
