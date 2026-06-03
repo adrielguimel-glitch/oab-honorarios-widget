@@ -47,19 +47,41 @@
   function extractPageContent() {
     const root = document.querySelector(CONFIG.selector) || document.body;
 
-    // Esconde o widget para não incluí-lo no texto extraído
-    const widgetEl = document.getElementById('__oab_root');
-    if (widgetEl) widgetEl.style.visibility = 'hidden';
+    const BLOCK_TAGS = new Set(['div','p','li','h1','h2','h3','h4','h5','h6',
+      'section','article','tr','td','th','dt','dd','blockquote','label','span']);
+    const SKIP_TAGS  = new Set(['script','style','noscript','iframe','svg','path']);
 
-    let text = (root.innerText || '').trim();
+    const lines = [];
+    let buf = [];
 
-    if (widgetEl) widgetEl.style.visibility = '';
+    const flush = () => {
+      const t = buf.join(' ').replace(/\s+/g,' ').trim();
+      if (t) lines.push(t);
+      buf = [];
+    };
 
-    text = text.replace(/\n{3,}/g, '\n\n').replace(/[ \t]{2,}/g, ' ').trim();
+    const walk = (node) => {
+      if (node.id === '__oab_root') return;
+      if (node.nodeType === 3) {
+        const t = node.textContent.replace(/\s+/g,' ').trim();
+        if (t) buf.push(t);
+        return;
+      }
+      if (node.nodeType !== 1) return;
+      const tag = node.tagName.toLowerCase();
+      if (SKIP_TAGS.has(tag)) return;
 
-    if (text.length > 20000) {
-      text = text.slice(0, 20000) + '\n\n[... conteúdo truncado ...]';
-    }
+      const isBlock = BLOCK_TAGS.has(tag);
+      if (isBlock) flush();
+      node.childNodes.forEach(walk);
+      if (isBlock) flush();
+    };
+
+    walk(root);
+    flush();
+
+    let text = lines.filter(Boolean).join('\n').replace(/\n{3,}/g,'\n\n').trim();
+    if (text.length > 20000) text = text.slice(0, 20000) + '\n\n[... truncado ...]';
     return text;
   }
 
