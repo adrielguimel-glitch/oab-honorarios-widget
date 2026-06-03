@@ -517,6 +517,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
         if (CONFIG.leadsUrl) {
           await fetch(CONFIG.leadsUrl, {
             method: 'POST',
+            mode: 'no-cors', // necessário para Google Apps Script
             body: JSON.stringify({
               nome, email, telefone: tel,
               site: location.hostname,
