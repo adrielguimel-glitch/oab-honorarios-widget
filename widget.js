@@ -78,13 +78,48 @@
     return '';
   }
 
-  async function fetchContentFromApi() {
-    const res  = await fetch(CONFIG.contentUrl);
+  // Cache do conteúdo carregado — só busca uma vez por sessão
+  let _contentCache = null;
+
+  async function loadContent() {
+    if (_contentCache) return _contentCache;
+    const res  = await fetch(CONFIG.contentUrl, { cache: 'no-store' });
     const json = await res.json();
-    let text = jsonToReadableText(json, 0);
-    text = text.replace(/\n{3,}/g,'\n\n').trim();
-    if (text.length > 30000) text = text.slice(0, 30000) + '\n\n[... truncado ...]';
-    return text;
+    // Se o JSON já tem campo "content" (arquivo data/*.json), usa direto
+    // Senão, converte JSON bruto de API
+    _contentCache = json.content
+      ? json.content
+      : jsonToReadableText(json, 0).replace(/\n{3,}/g, '\n\n').trim();
+    return _contentCache;
+  }
+
+  // Filtra seções relevantes para a query — evita mandar 87K chars para a IA
+  function filterRelevantSections(fullText, query) {
+    const sections = fullText.split(/\n(?=## )/);
+    const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+
+    // Pontua cada seção por quantas palavras da query ela contém
+    const scored = sections.map(sec => {
+      const low = sec.toLowerCase();
+      const score = words.reduce((s, w) => s + (low.includes(w) ? 1 : 0), 0);
+      return { sec, score };
+    });
+
+    // Pega as 3 seções com maior pontuação (pelo menos 1 match)
+    const top = scored
+      .filter(x => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3)
+      .map(x => x.sec);
+
+    // Se nenhuma seção bateu, usa as 2 primeiras como fallback
+    const result = top.length ? top : sections.slice(0, 2);
+    return result.join('\n\n').slice(0, 12000);
+  }
+
+  async function fetchContentFromApi(query) {
+    const full = await loadContent();
+    return filterRelevantSections(full, query || '');
   }
 
   function extractPageContent() {
@@ -421,7 +456,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
         return;
       }
       if (CONFIG.contentUrl) {
-        pageContent = await fetchContentFromApi();
+        pageContent = await fetchContentFromApi(text);
       } else {
         pageContent = extractPageContent();
       }
