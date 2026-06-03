@@ -280,12 +280,27 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const panel     = root.querySelector('.oab-panel');
     const input     = root.querySelector('.oab-input');
     const sendBtn   = root.querySelector('.oab-send');
+    const resetBtn  = root.querySelector('.oab-reset');
+    const msgs      = root.querySelector('.oab-messages');
+    const suggWrap  = root.querySelector('.oab-suggestions-wrap');
 
     toggle.addEventListener('click', () => {
       isOpen = !isOpen;
       panel.classList.toggle('oab-open', isOpen);
       toggle.classList.toggle('oab-btn-open', isOpen);
       if (isOpen) setTimeout(() => input.focus(), 260);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      msgs.innerHTML = `
+        <div class="oab-msg oab-msg-bot">
+          <div class="oab-bubble">Olá! Me diga qual serviço jurídico foi prestado e vou localizar os honorários correspondentes nesta página.</div>
+          <span class="oab-time">${getTime()}</span>
+        </div>`;
+      suggWrap.style.display = '';
+      firstMessage = true;
+      input.value = '';
+      input.style.height = 'auto';
     });
 
     sendBtn.addEventListener('click', handleSend);
@@ -312,6 +327,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const sendBtn = root.querySelector('.oab-send');
     const sugg    = root.querySelector('.oab-suggestions-wrap');
     const msgs    = root.querySelector('.oab-messages');
+    const resetBtn = root.querySelector('.oab-reset');
 
     const text = input.value.trim();
     if (!text || isLoading) return;
@@ -421,6 +437,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <span>${CONFIG.subtitle}</span>
           </div>
           <div class="oab-status"><div class="oab-dot"></div>online</div>
+          <button class="oab-reset" aria-label="Recomeçar conversa" title="Nova conversa">↺</button>
         </div>
 
         <div class="oab-messages">
@@ -538,6 +555,13 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   display:flex !important;align-items:center !important;gap:6px !important;
   font-size:11.5px !important;color:rgba(255,255,255,.65) !important
 }
+#__oab_root .oab-reset{
+  background:rgba(255,255,255,.15) !important;border:none !important;
+  border-radius:8px !important;color:#fff !important;cursor:pointer !important;
+  padding:4px 8px !important;font-size:16px !important;line-height:1 !important;
+  flex-shrink:0 !important;transition:background .15s !important;outline:none !important
+}
+#__oab_root .oab-reset:hover{background:rgba(255,255,255,.28) !important}
 #__oab_root .oab-dot{
   width:8px !important;height:8px !important;background:#86efac !important;
   border-radius:50% !important;flex-shrink:0 !important;
