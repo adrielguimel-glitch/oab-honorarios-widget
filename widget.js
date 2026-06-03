@@ -18,13 +18,13 @@
 
   const CONFIG = {
     apiKey:    scriptTag.getAttribute('data-api-key') || '',
-    theme:     scriptTag.getAttribute('data-theme') || 'navy',
     position:  scriptTag.getAttribute('data-position') || 'bottom-right',
     title:     scriptTag.getAttribute('data-title') || 'Assistente de Honorários',
     subtitle:  scriptTag.getAttribute('data-subtitle') || 'Tabela OAB • IA',
-    proxyUrl:  scriptTag.getAttribute('data-proxy-url') || '',   // futuro: URL do proxy
-    selector:  scriptTag.getAttribute('data-selector') || 'body', // seletor CSS do conteúdo
+    proxyUrl:  scriptTag.getAttribute('data-proxy-url') || '',
+    selector:  scriptTag.getAttribute('data-selector') || 'body',
     lang:      scriptTag.getAttribute('data-lang') || 'pt-BR',
+    mock:      scriptTag.getAttribute('data-mock') === 'true',
   };
 
   // ─── Evitar inicialização dupla ───────────────────────────────────────────
@@ -71,6 +71,54 @@
       text = text.slice(0, 12000) + '\n\n[... conteúdo truncado ...]';
     }
     return text;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // MODO MOCK — respostas simuladas para demonstração (data-mock="true")
+  // ─────────────────────────────────────────────────────────────────────────
+  const MOCK_RESPONSES = [
+    {
+      keywords: ['divórcio', 'divorcio', 'consensual', 'separação'],
+      text: 'Para o **divórcio consensual**, a tabela OAB/RS indica honorários de **5 a 15 UFIRs por parte**. Sendo um procedimento extrajudicial ou judicial simplificado, o valor tende ao piso da tabela quando há acordo total entre as partes.',
+      result: { found: true, section: 'Direito Civil', items: [{ label: 'Divórcio consensual', value: '5 a 15 UFIRs por parte' }, { label: 'Divórcio litigioso', value: '10 a 20 UFIRs por parte' }], scrollKeyword: 'Divórcio consensual' },
+    },
+    {
+      keywords: ['aposentadoria', 'invalidez', 'previdenciário', 'inss', 'benefício'],
+      text: 'Para **aposentadoria por invalidez**, o honorário sugerido pela OAB/RS é de **20% a 30% dos valores atrasados** (retroativos). Esse percentual se aplica também a outros benefícios previdenciários como auxílio-doença e BPC/LOAS.',
+      result: { found: true, section: 'Direito Previdenciário', items: [{ label: 'Aposentadoria por invalidez', value: '20% a 30% dos atrasados' }, { label: 'Auxílio por incapacidade', value: '20% a 30% dos atrasados' }], scrollKeyword: 'Aposentadoria por invalidez' },
+    },
+    {
+      keywords: ['trabalhista', 'reclamação', 'clt', 'demissão', 'rescisão', 'trabalho'],
+      text: 'Para **reclamação trabalhista simples**, a tabela prevê honorários de **20% a 30% do valor da causa**. Caso envolva recurso ordinário, acrescenta-se 10% a 20% adicional por instância.',
+      result: { found: true, section: 'Direito do Trabalho', items: [{ label: 'Reclamação trabalhista simples', value: '20% a 30% do valor da causa' }, { label: 'Recurso ordinário', value: '10% a 20% do valor da causa' }], scrollKeyword: 'Reclamação trabalhista' },
+    },
+    {
+      keywords: ['contrato', 'elaboração', 'minutar', 'redigir', 'contratual'],
+      text: 'Para **elaboração de contrato**, os honorários variam conforme a complexidade: contratos simples ficam entre **R$ 500,00 e R$ 1.500,00**, enquanto contratos complexos vão de **R$ 1.500,00 a R$ 5.000,00**.',
+      result: { found: true, section: 'Consultoria e Contratos', items: [{ label: 'Contrato simples', value: 'R$ 500,00 a R$ 1.500,00' }, { label: 'Contrato complexo', value: 'R$ 1.500,00 a R$ 5.000,00' }], scrollKeyword: 'Elaboração de contrato' },
+    },
+    {
+      keywords: ['habeas corpus', 'hc', 'prisão', 'liberdade', 'criminal', 'penal'],
+      text: 'Para **habeas corpus**, a tabela OAB/RS prevê honorários de **15 a 30 UFIRs**. Para defesa completa em processo criminal na fase processual, o valor sobe para **20 a 60 UFIRs**.',
+      result: { found: true, section: 'Direito Criminal', items: [{ label: 'Habeas corpus', value: '15 a 30 UFIRs' }, { label: 'Defesa criminal — fase processual', value: '20 a 60 UFIRs' }], scrollKeyword: 'Habeas corpus' },
+    },
+    {
+      keywords: ['inventário', 'partilha', 'espólio', 'herança', 'sucessão'],
+      text: 'Para **inventário e partilha**, os honorários são calculados sobre o monte-mor (total do patrimônio): **4% a 6%**. Em inventários de menor complexidade ou por escritura pública, aplica-se o piso da tabela.',
+      result: { found: true, section: 'Direito Civil', items: [{ label: 'Inventário e partilha', value: '4% a 6% do monte-mor' }], scrollKeyword: 'Inventário e partilha' },
+    },
+  ];
+
+  function mockAI(userMessage) {
+    const msg = userMessage.toLowerCase();
+    const match = MOCK_RESPONSES.find(r => r.keywords.some(k => msg.includes(k)));
+    if (match) {
+      return { displayText: match.text, result: match.result };
+    }
+    return {
+      displayText: 'Não encontrei um honorário específico para esse serviço na tabela. Tente descrever com mais detalhes ou consulte diretamente a tabela OAB/RS na página.',
+      result: { found: false, section: '', items: [], scrollKeyword: '' },
+    };
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -271,8 +319,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     const typingEl = appendTyping(msgs);
 
     try {
-      const pageContent = extractPageContent();
-      const { displayText, result } = await askAI(text, pageContent);
+      const { displayText, result } = CONFIG.mock
+        ? mockAI(text)
+        : await askAI(text, extractPageContent());
 
       typingEl.remove();
       appendMsg(msgs, displayText, 'bot', result);
