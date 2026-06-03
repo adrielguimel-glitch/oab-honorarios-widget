@@ -46,29 +46,63 @@
   // ─────────────────────────────────────────────────────────────────────────
   function extractPageContent() {
     const root = document.querySelector(CONFIG.selector) || document.body;
-
-    // Clona para não modificar o DOM real
     const clone = root.cloneNode(true);
 
-    // Remove elementos que não contêm conteúdo útil
-    const NOISE_SELECTORS = [
-      'script', 'style', 'noscript', 'iframe',
-      'nav', 'header', 'footer',
-      '[role="navigation"]', '[role="banner"]', '[role="contentinfo"]',
-      '.widget-oab-root',            // o próprio widget
-      '[aria-hidden="true"]',
-    ];
-    NOISE_SELECTORS.forEach(sel => {
-      clone.querySelectorAll(sel).forEach(el => el.remove());
-    });
+    const NOISE = ['script','style','noscript','iframe','nav','header','footer',
+      '[role="navigation"]','[role="banner"]','[role="contentinfo"]','.widget-oab-root'];
+    NOISE.forEach(sel => clone.querySelectorAll(sel).forEach(el => el.remove()));
 
-    // textContent lê todo o conteúdo incluindo acordeões/elementos ocultos
-    let text = (clone.textContent || '').trim();
-    text = text.replace(/\n{3,}/g, '\n\n').replace(/[ \t]{2,}/g, ' ');
+    let lines = [];
 
-    // Limita a ~12.000 chars para não explodir o contexto
-    if (text.length > 12000) {
-      text = text.slice(0, 12000) + '\n\n[... conteúdo truncado ...]';
+    // Percorre a árvore preservando estrutura de títulos e tabelas
+    function walk(node) {
+      if (node.nodeType === 3) { // texto
+        const t = node.textContent.trim();
+        if (t) lines.push(t);
+        return;
+      }
+      if (node.nodeType !== 1) return;
+
+      const tag = node.tagName.toLowerCase();
+
+      // Títulos → linha em destaque
+      if (/^h[1-6]$/.test(tag)) {
+        const t = node.textContent.trim();
+        if (t) lines.push('\n## ' + t);
+        return;
+      }
+
+      // Linhas de tabela → células separadas por " | "
+      if (tag === 'tr') {
+        const cells = Array.from(node.querySelectorAll('th,td'))
+          .map(c => c.textContent.trim())
+          .filter(Boolean);
+        if (cells.length) lines.push(cells.join(' | '));
+        return;
+      }
+
+      // Itens de lista
+      if (tag === 'li') {
+        const t = node.textContent.trim();
+        if (t) lines.push('- ' + t);
+        return;
+      }
+
+      // Parágrafo → quebra de linha
+      if (tag === 'p' || tag === 'div' || tag === 'section' || tag === 'article') {
+        node.childNodes.forEach(walk);
+        lines.push('');
+        return;
+      }
+
+      node.childNodes.forEach(walk);
+    }
+
+    walk(clone);
+
+    let text = lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+    if (text.length > 14000) {
+      text = text.slice(0, 14000) + '\n\n[... conteúdo truncado ...]';
     }
     return text;
   }
@@ -213,17 +247,36 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   function smartScroll(keyword) {
     if (!keyword) return;
 
-    const kw = keyword.toLowerCase();
+    const kw = keyword.toLowerCase().trim();
+    const words = kw.split(/\s+/).filter(w => w.length > 3);
     const candidates = Array.from(document.querySelectorAll(
-      'h1,h2,h3,h4,h5,h6,td,th,li,p,dt,dd,span,div'
-    ));
+      'h1,h2,h3,h4,h5,h6,td,th,li,p,dt,dd,span,button,[class*="title"],[class*="header"]'
+    )).filter(el => !el.closest('#__oab_root'));
 
-    const found = candidates.find(el => {
+    // 1. Match exato
+    let found = candidates.find(el => {
       const t = (el.textContent || '').toLowerCase();
-      return t.includes(kw) && t.length < 200;
+      return t.includes(kw) && t.length < 300;
     });
 
+    // 2. Match por palavras individuais (≥2 palavras coincidindo)
+    if (!found && words.length >= 2) {
+      found = candidates.find(el => {
+        const t = (el.textContent || '').toLowerCase();
+        const hits = words.filter(w => t.includes(w)).length;
+        return hits >= Math.ceil(words.length * 0.6) && t.length < 400;
+      });
+    }
+
     if (found) {
+      // Expande acordeão pai se existir
+      let parent = found.parentElement;
+      while (parent && parent !== document.body) {
+        if (getComputedStyle(parent).display === 'none') {
+          parent.style.display = 'block';
+        }
+        parent = parent.parentElement;
+      }
       found.scrollIntoView({ behavior: 'smooth', block: 'center' });
       highlightElement(found);
     }
