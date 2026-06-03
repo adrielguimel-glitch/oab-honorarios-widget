@@ -31,13 +31,6 @@
   if (window.__oabWidgetLoaded) return;
   window.__oabWidgetLoaded = true;
 
-  // ─── Aguarda DOM estar pronto ─────────────────────────────────────────────
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-
   // ─────────────────────────────────────────────────────────────────────────
   // INIT
   // ─────────────────────────────────────────────────────────────────────────
@@ -596,6 +589,13 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 }`;
 
     document.head.appendChild(style);
+  }
+
+  // ─── Aguarda DOM estar pronto ─────────────────────────────────────────────
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 
 })();
