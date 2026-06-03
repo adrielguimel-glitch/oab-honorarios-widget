@@ -370,7 +370,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
         </div>
-        <div class="oab-footer">Assistente IA · OAB · v6</div>
+        <div class="oab-footer">Assistente IA · OAB · v7</div>
       </div>
 
       <button class="oab-toggle" aria-label="Abrir assistente de honorários">
@@ -433,7 +433,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── painel ── */
 .oab-panel{
   position:absolute;bottom:72px;right:0;
-  width:400px;background:var(--c-white);
+  width:420px;background:var(--c-white);
   border-radius:var(--radius-panel);
   box-shadow:var(--shadow-panel);
   overflow:hidden;isolation:isolate;
@@ -446,16 +446,16 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── header ── */
 .oab-header{
   background:linear-gradient(135deg,var(--j-darker) 0%,var(--j-primary) 100%);
-  padding:22px 32px;
+  padding:24px 36px;
   display:flex;align-items:center;gap:16px;flex-shrink:0
 }
 .oab-header-shield{
-  width:46px;height:46px;background:var(--j-gold);
-  border-radius:10px 10px 18px 18px;display:flex;
+  width:44px;height:44px;background:var(--j-gold);
+  border-radius:50%;display:flex;
   align-items:center;justify-content:center;
-  font-size:14px;font-weight:700;color:#fff;flex-shrink:0;
+  font-size:13px;font-weight:700;color:#fff;flex-shrink:0;
   font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.5px;
-  box-shadow:0 3px 12px rgba(0,0,0,.25)
+  box-shadow:0 2px 8px rgba(0,0,0,.20),0 0 0 3px rgba(255,255,255,.2)
 }
 .oab-header-info{display:flex;flex-direction:column;gap:3px;min-width:0}
 .oab-header-info strong{
@@ -477,9 +477,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── mensagens ── */
 .oab-messages{
-  overflow-y:auto;padding:22px 24px 16px;
+  overflow-y:auto;padding:24px 28px 18px;
   display:flex;flex-direction:column;gap:14px;
-  background:var(--c-surface);
+  background:var(--c-white);
   min-height:200px;max-height:320px;flex:1
 }
 .oab-messages::-webkit-scrollbar{width:3px}
@@ -496,7 +496,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   font-size:13.5px;color:var(--c-text)
 }
 .oab-msg-bot .oab-bubble{
-  background:var(--c-white);border:1px solid var(--c-border);
+  background:var(--c-surface);border:1px solid var(--c-border);
   border-radius:4px var(--radius-msg) var(--radius-msg) var(--radius-msg);
   box-shadow:var(--shadow-el)
 }
@@ -551,7 +551,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 /* ── sugestões ── */
 .oab-suggestions{
   display:flex;gap:8px;
-  padding:12px 0 14px 24px;
+  padding:12px 0 14px 28px;
   background:var(--c-surface);
   border-top:1px solid var(--c-border);
   overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;
@@ -572,7 +572,7 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
 /* ── input ── */
 .oab-input-row{
-  border-top:1px solid var(--c-border);padding:14px 24px;
+  border-top:1px solid var(--c-border);padding:14px 28px;
   display:flex;gap:10px;align-items:flex-end;
   background:var(--c-white);flex-shrink:0
 }
