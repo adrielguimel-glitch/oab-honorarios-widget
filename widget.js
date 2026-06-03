@@ -23,6 +23,7 @@
     subtitle:   scriptTag.getAttribute('data-subtitle') || 'Tabela OAB • IA',
     proxyUrl:   scriptTag.getAttribute('data-proxy-url') || '',
     contentUrl: scriptTag.getAttribute('data-content-url') || '',
+    leadsUrl:   scriptTag.getAttribute('data-leads-url') || '',
     selector:   scriptTag.getAttribute('data-selector') || 'body',
     lang:       scriptTag.getAttribute('data-lang') || 'pt-BR',
     mock:       scriptTag.getAttribute('data-mock') === 'true',
@@ -371,6 +372,9 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   // ESTADO DO CHAT
   // ─────────────────────────────────────────────────────────────────────────
   let isOpen = false;
+  let leadCaptured = !!localStorage.getItem('oab_lead_captured');
+  let freeUsed     = false; // 1ª interação já foi usada?
+  let pendingQuery = '';    // guarda a query enquanto form está aberto
   let isLoading = false;
   let firstMessage = true;
 
@@ -482,6 +486,65 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
     });
   }
 
+  function showLeadForm(msgs, afterQuery) {
+    const card = document.createElement('div');
+    card.className = 'oab-lead-card';
+    card.innerHTML = `
+      <div class="oab-lead-title">Para continuar usando o assistente, preencha seus dados:</div>
+      <input class="oab-lead-input" type="text"  placeholder="Seu nome completo"  data-f="nome">
+      <input class="oab-lead-input" type="email" placeholder="E-mail"              data-f="email">
+      <input class="oab-lead-input" type="tel"   placeholder="Telefone / WhatsApp" data-f="tel">
+      <button class="oab-lead-btn">Continuar →</button>
+      <div class="oab-lead-err" style="display:none;color:#dc2626;font-size:12px;margin-top:4px"></div>`;
+
+    card.querySelector('.oab-lead-btn').addEventListener('click', async () => {
+      const nome  = card.querySelector('[data-f="nome"]').value.trim();
+      const email = card.querySelector('[data-f="email"]').value.trim();
+      const tel   = card.querySelector('[data-f="tel"]').value.trim();
+      const err   = card.querySelector('.oab-lead-err');
+
+      if (!nome || !email || !tel) {
+        err.textContent = 'Preencha todos os campos.';
+        err.style.display = 'block';
+        return;
+      }
+
+      const btn = card.querySelector('.oab-lead-btn');
+      btn.textContent = 'Enviando...';
+      btn.disabled = true;
+
+      try {
+        if (CONFIG.leadsUrl) {
+          await fetch(CONFIG.leadsUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+              nome, email, telefone: tel,
+              site: location.hostname,
+              pergunta: afterQuery,
+            }),
+          });
+        }
+      } catch (_) { /* falha silenciosa — não bloqueia o usuário */ }
+
+      localStorage.setItem('oab_lead_captured', '1');
+      leadCaptured = true;
+      card.remove();
+
+      // Adiciona mensagem de boas-vindas e processa a query pendente
+      appendMsg(msgs, `Obrigado, ${nome.split(' ')[0]}! Pode continuar usando o assistente.`, 'bot');
+      if (pendingQuery) {
+        const root   = document.getElementById('__oab_root');
+        const input  = root.querySelector('.oab-input');
+        input.value  = pendingQuery;
+        pendingQuery = '';
+        handleSend();
+      }
+    });
+
+    msgs.appendChild(card);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
   async function handleSend() {
     const root    = document.getElementById('__oab_root');
     const input   = root.querySelector('.oab-input');
@@ -495,6 +558,16 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
 
     // Esconde sugestões na primeira mensagem
     if (firstMessage) { sugg.style.display = 'none'; firstMessage = false; }
+
+    // Gate de lead: 1ª interação grátis, depois pede dados
+    if (!leadCaptured && CONFIG.leadsUrl && freeUsed) {
+      appendMsg(msgs, text, 'user');
+      input.value = '';
+      pendingQuery = text;
+      showLeadForm(msgs, text);
+      return;
+    }
+    if (!leadCaptured && CONFIG.leadsUrl) freeUsed = true;
 
     // Mensagem do usuário
     appendMsg(msgs, text, 'user');
@@ -873,6 +946,34 @@ Se não encontrado: { "found": false, "section": "", "items": [], "scrollKeyword
   font-weight:600 !important;cursor:pointer !important
 }
 #__oab_root .oab-footer-link:hover{color:var(--j-dark) !important}
+
+/* ── lead capture form ── */
+#__oab_root .oab-lead-card{
+  background:#f0fdf4 !important;border:1.5px solid #86efac !important;
+  border-radius:14px !important;padding:16px !important;margin:4px 0 !important;
+  display:flex !important;flex-direction:column !important;gap:10px !important
+}
+#__oab_root .oab-lead-title{
+  font-size:13.5px !important;font-weight:600 !important;color:#166534 !important;
+  line-height:1.4 !important
+}
+#__oab_root .oab-lead-input{
+  border:1.5px solid #d1fae5 !important;border-radius:10px !important;
+  padding:10px 14px !important;font-size:13.5px !important;
+  font-family:'DM Sans',system-ui,sans-serif !important;
+  color:#1a2a25 !important;background:#fff !important;
+  outline:none !important;width:100% !important
+}
+#__oab_root .oab-lead-input:focus{border-color:var(--j-primary) !important}
+#__oab_root .oab-lead-btn{
+  background:var(--j-primary) !important;color:#fff !important;
+  border:none !important;border-radius:10px !important;
+  padding:11px !important;font-size:14px !important;font-weight:600 !important;
+  cursor:pointer !important;font-family:'DM Sans',system-ui,sans-serif !important;
+  transition:background .15s !important
+}
+#__oab_root .oab-lead-btn:hover{background:var(--j-dark) !important}
+#__oab_root .oab-lead-btn:disabled{background:#9ca3af !important;cursor:not-allowed !important}
 
 /* ── drag handle ── */
 #__oab_root .oab-drag-handle{
